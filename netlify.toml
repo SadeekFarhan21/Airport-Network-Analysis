@@ -1,5 +1,5 @@
 [build]
-  command = "/Applications/RStudio.app/Contents/Resources/app/quarto/bin/quarto render"
+  command = "quarto render"
   publish = "_site"
 
 [[redirects]]
