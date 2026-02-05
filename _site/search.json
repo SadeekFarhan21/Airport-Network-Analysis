@@ -1,0 +1,72 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Airport Network Analysis",
+    "section": "",
+    "text": "This project analyzes flight network data from March 2020 through October 2021, covering a critical period during the COVID-19 pandemic. The dataset includes comprehensive flight tracking information across multiple months."
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "Airport Network Analysis",
+    "section": "",
+    "text": "This project analyzes flight network data from March 2020 through October 2021, covering a critical period during the COVID-19 pandemic. The dataset includes comprehensive flight tracking information across multiple months."
+  },
+  {
+    "objectID": "index.html#dataset-overview",
+    "href": "index.html#dataset-overview",
+    "title": "Airport Network Analysis",
+    "section": "Dataset Overview",
+    "text": "Dataset Overview\nThe analysis uses flight data spanning:\n\nTime Period: March 2020 - October 2021\nTotal Files: 20 monthly datasets\nData Format: CSV files with flight tracking information\n\n\nData Collection Period"
+  },
+  {
+    "objectID": "index.html#data-structure",
+    "href": "index.html#data-structure",
+    "title": "Airport Network Analysis",
+    "section": "Data Structure",
+    "text": "Data Structure\nEach monthly dataset contains flight information including:\n\nFlight identifiers\nOrigin and destination airports\nDeparture and arrival times\nFlight status information\nAircraft details"
+  },
+  {
+    "objectID": "index.html#project-goals",
+    "href": "index.html#project-goals",
+    "title": "Airport Network Analysis",
+    "section": "Project Goals",
+    "text": "Project Goals\n\nNetwork Analysis: Examine the structure and connectivity of the airport network\nTemporal Trends: Analyze how flight patterns changed during the pandemic period\nHub Identification: Identify major airport hubs and their characteristics\nRoute Analysis: Study popular routes and their evolution over time"
+  },
+  {
+    "objectID": "index.html#sample-data-analysis",
+    "href": "index.html#sample-data-analysis",
+    "title": "Airport Network Analysis",
+    "section": "Sample Data Analysis",
+    "text": "Sample Data Analysis\n\n\nCode\n# Example: Loading and exploring a dataset\nlibrary(readr)\nlibrary(dplyr)\n\n# Load a sample month\nflights &lt;- read_csv(\"dataset/flightlist_20210601_20210630.csv\")\n\n# Basic summary\nsummary(flights)\n\n# Example analysis: Top airports by flight count\n# top_airports &lt;- flights %&gt;%\n#   count(origin_airport, sort = TRUE) %&gt;%\n#   head(10)"
+  },
+  {
+    "objectID": "index.html#network-visualization",
+    "href": "index.html#network-visualization",
+    "title": "Airport Network Analysis",
+    "section": "Network Visualization",
+    "text": "Network Visualization\nFuture sections will include:\n\nInteractive network graphs showing airport connections\nHeat maps of flight density by time period\nComparison of pre-pandemic vs pandemic flight patterns\nGeographic visualizations of routes"
+  },
+  {
+    "objectID": "index.html#methodology",
+    "href": "index.html#methodology",
+    "title": "Airport Network Analysis",
+    "section": "Methodology",
+    "text": "Methodology\nThe analysis employs:\n\nR for data processing and statistical analysis\nNetwork analysis techniques to understand connectivity\nTime series analysis to identify trends\nGeospatial analysis for route visualization"
+  },
+  {
+    "objectID": "index.html#next-steps",
+    "href": "index.html#next-steps",
+    "title": "Airport Network Analysis",
+    "section": "Next Steps",
+    "text": "Next Steps\n\nLoad and combine all monthly datasets\nClean and standardize the data\nPerform exploratory data analysis\nBuild network graphs\nAnalyze temporal patterns\nCreate interactive visualizations"
+  },
+  {
+    "objectID": "index.html#data-source",
+    "href": "index.html#data-source",
+    "title": "Airport Network Analysis",
+    "section": "Data Source",
+    "text": "Data Source\nFlight data collected from public flight tracking sources covering the period of March 2020 through October 2021.\n\nLast updated: 2026-02-05"
+  }
+]

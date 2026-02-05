@@ -1,0 +1,132 @@
+---
+title: "Airport Network Analysis"
+author: "Farhan"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    embed-resources: false
+editor: visual
+---
+
+## Introduction
+
+This project analyzes flight network data from March 2020 through October 2021, covering a critical period during the COVID-19 pandemic. The dataset includes comprehensive flight tracking information across multiple months.
+
+## Dataset Overview
+
+The analysis uses flight data spanning:
+
+- **Time Period**: March 2020 - October 2021
+- **Total Files**: 20 monthly datasets
+- **Data Format**: CSV files with flight tracking information
+
+### Data Collection Period
+
+```{r}
+#| echo: false
+#| warning: false
+
+library(lubridate)
+library(dplyr)
+library(ggplot2)
+
+# Create a timeline of available data
+months <- data.frame(
+  date = seq(ymd("2020-03-01"), ymd("2021-10-01"), by = "month"),
+  available = TRUE
+)
+
+ggplot(months, aes(x = date, y = 1)) +
+  geom_point(size = 4, color = "#2E86AB") +
+  geom_line(color = "#2E86AB", size = 1) +
+  scale_x_date(date_breaks = "2 months", date_labels = "%b %Y") +
+  labs(title = "Flight Data Collection Timeline",
+       subtitle = "March 2020 - October 2021",
+       x = "Month",
+       y = "") +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        plot.title = element_text(size = 16, face = "bold"),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## Data Structure
+
+Each monthly dataset contains flight information including:
+
+- Flight identifiers
+- Origin and destination airports
+- Departure and arrival times
+- Flight status information
+- Aircraft details
+
+## Project Goals
+
+1. **Network Analysis**: Examine the structure and connectivity of the airport network
+2. **Temporal Trends**: Analyze how flight patterns changed during the pandemic period
+3. **Hub Identification**: Identify major airport hubs and their characteristics
+4. **Route Analysis**: Study popular routes and their evolution over time
+
+## Sample Data Analysis
+
+```{r}
+#| eval: false
+#| echo: true
+
+# Example: Loading and exploring a dataset
+library(readr)
+library(dplyr)
+
+# Load a sample month
+flights <- read_csv("dataset/flightlist_20210601_20210630.csv")
+
+# Basic summary
+summary(flights)
+
+# Example analysis: Top airports by flight count
+# top_airports <- flights %>%
+#   count(origin_airport, sort = TRUE) %>%
+#   head(10)
+```
+
+## Network Visualization
+
+Future sections will include:
+
+- Interactive network graphs showing airport connections
+- Heat maps of flight density by time period
+- Comparison of pre-pandemic vs pandemic flight patterns
+- Geographic visualizations of routes
+
+## Methodology
+
+The analysis employs:
+
+- **R** for data processing and statistical analysis
+- **Network analysis** techniques to understand connectivity
+- **Time series analysis** to identify trends
+- **Geospatial analysis** for route visualization
+
+## Next Steps
+
+1. Load and combine all monthly datasets
+2. Clean and standardize the data
+3. Perform exploratory data analysis
+4. Build network graphs
+5. Analyze temporal patterns
+6. Create interactive visualizations
+
+## Data Source
+
+Flight data collected from public flight tracking sources covering the period of March 2020 through October 2021.
+
+---
+
+*Last updated: `r Sys.Date()`*
