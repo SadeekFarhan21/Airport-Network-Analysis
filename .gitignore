@@ -1,0 +1,11 @@
+# Corrupted/empty files
+flightlist_20211101_20211130.csv.gz
+
+# R files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# macOS
+.DS_Store
