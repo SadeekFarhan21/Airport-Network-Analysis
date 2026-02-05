@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip:*)",
+      "Bash(ditto:*)",
+      "Bash(xxd:*)",
+      "Bash(7z x:*)",
+      "Bash(ls:*)",
+      "Bash(brew install:*)",
+      "Bash(git init:*)",
+      "Bash(git lfs install:*)",
+      "Bash(git lfs track:*)",
+      "Bash(du:*)",
+      "Bash(git lfs:*)",
+      "Bash(gunzip:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git rm:*)",
+      "Bash(git rev-list:*)",
+      "Bash(git cat-file:*)",
+      "Bash(sort:*)",
+      "Bash(git filter-repo:*)",
+      "Bash(git remote add:*)"
+    ]
+  }
+}
