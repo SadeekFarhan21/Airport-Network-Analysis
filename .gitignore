@@ -10,4 +10,7 @@
 .DS_Store
 
 /.quarto/
+/_site/
+quarto-*.tar.gz
+quarto-*.deb
 **/*.quarto_ipynb

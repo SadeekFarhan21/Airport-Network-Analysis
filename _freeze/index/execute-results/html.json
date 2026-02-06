@@ -1,0 +1,17 @@
+{
+  "hash": "e1ec5b7e7d70774b940b96531e5f2c1a",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Airport Network Analysis\"\nauthor: \"Farhan\"\nformat:\n  html:\n    theme: cosmo\n    toc: true\n    toc-depth: 3\n    code-fold: true\n    code-tools: true\n    embed-resources: false\neditor: visual\n---\n\n\n\n\n## Introduction\n\nThis project analyzes flight network data from March 2020 through October 2021, covering a critical period during the COVID-19 pandemic. The dataset includes comprehensive flight tracking information across multiple months.\n\n## Dataset Overview\n\nThe analysis uses flight data spanning:\n\n- **Time Period**: March 2020 - October 2021\n- **Total Files**: 20 monthly datasets\n- **Data Format**: CSV files with flight tracking information\n\n### Data Collection Period\n\n\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n\n\n\n## Data Structure\n\nEach monthly dataset contains flight information including:\n\n- Flight identifiers\n- Origin and destination airports\n- Departure and arrival times\n- Flight status information\n- Aircraft details\n\n## Project Goals\n\n1. **Network Analysis**: Examine the structure and connectivity of the airport network\n2. **Temporal Trends**: Analyze how flight patterns changed during the pandemic period\n3. **Hub Identification**: Identify major airport hubs and their characteristics\n4. **Route Analysis**: Study popular routes and their evolution over time\n\n## Sample Data Analysis\n\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# Example: Loading and exploring a dataset\nlibrary(readr)\nlibrary(dplyr)\n\n# Load a sample month\nflights <- read_csv(\"dataset/flightlist_20210601_20210630.csv\")\n\n# Basic summary\nsummary(flights)\n\n# Example analysis: Top airports by flight count\n# top_airports <- flights %>%\n#   count(origin_airport, sort = TRUE) %>%\n#   head(10)\n```\n:::\n\n\n\n\n## Network Visualization\n\nFuture sections will include:\n\n- Interactive network graphs showing airport connections\n- Heat maps of flight density by time period\n- Comparison of pre-pandemic vs pandemic flight patterns\n- Geographic visualizations of routes\n\n## Methodology\n\nThe analysis employs:\n\n- **R** for data processing and statistical analysis\n- **Network analysis** techniques to understand connectivity\n- **Time series analysis** to identify trends\n- **Geospatial analysis** for route visualization\n\n## Next Steps\n\n1. Load and combine all monthly datasets\n2. Clean and standardize the data\n3. Perform exploratory data analysis\n4. Build network graphs\n5. Analyze temporal patterns\n6. Create interactive visualizations\n\n## Data Source\n\nFlight data collected from public flight tracking sources covering the period of March 2020 through October 2021.\n\n---\n\n*Last updated: 2026-02-05*\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

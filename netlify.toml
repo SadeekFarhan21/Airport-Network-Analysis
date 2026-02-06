@@ -2,10 +2,6 @@
   command = "bash build.sh"
   publish = "_site"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
 [build.environment]
-  QUARTO_VERSION = "1.5.0"
+  NODE_VERSION = "18"
+  # Quarto version is set in build.sh (1.5.57)

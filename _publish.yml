@@ -1,0 +1,6 @@
+- source: project
+  netlify:
+    - id: PASTE_YOUR_NETLIFY_SITE_ID
+      url: 'https://your-site-name.netlify.app'
+    - id: 5cab2d32-132a-4ea7-a57f-e9b68ac7859a
+      url: 'https://preeminent-banoffee-a35dd5.netlify.app'
