@@ -1,12 +1,16 @@
 #!/bin/bash
 set -e
 
-# Install Quarto
+# Install Quarto without sudo
 echo "Downloading Quarto..."
-curl -LO https://quarto.org/download/latest/quarto-linux-amd64.deb
+curl -LO https://github.com/quarto-dev/quarto-cli/releases/download/v1.5.57/quarto-1.5.57-linux-amd64.tar.gz
 
-echo "Installing Quarto..."
-sudo dpkg -i quarto-linux-amd64.deb
+echo "Extracting Quarto..."
+mkdir -p ~/quarto
+tar -xzf quarto-1.5.57-linux-amd64.tar.gz -C ~/quarto --strip-components=1
+
+echo "Adding Quarto to PATH..."
+export PATH="$HOME/quarto/bin:$PATH"
 
 echo "Quarto version:"
 quarto --version
