@@ -2,21 +2,35 @@ project:
   type: website
   output-dir: _site
 
-execute:
-  freeze: auto
+format:
+  html:
+    theme: litera
+    toc: true
+    toc-location: right
+    self-contained: true
 
 website:
   title: "Airport Network Analysis"
-  navbar:
-    background: primary
-    left:
-      - href: index.qmd
-        text: Home
+  site-url: https://divvy-bike-analysis.netlify.app
+  repo-url: https://github.com/SadeekFarhan21/Airport-Network-Analysis
 
-format:
-  html:
-    theme: cosmo
-    css: styles.css
-    toc: true
-    code-fold: true
-    code-tools: true
+  navbar:
+    left:
+      - text: "About Me"
+        href: about_me.qmd
+      - text: "Website"
+        menu: 
+          - text: "Personal"
+            href: https://farhan-sadeek.netlify.app
+          - text: "Academic"
+            href: https://farhan-college-notes.vercel.app
+      - text: "Links"
+        menu:
+          - text: "Github"
+            href: https://github.com/SadeekFarhan21/Divvy_Bike_Analysis
+          - text: "Linkedin"
+            href: https://www.linkedin.com/in/farhansadeekde110/
+          - text: "Twitter"
+            href: https://twitter.com/SadeekFarhan21
+          - text: "Tableau"
+            href: https://public.tableau.com/app/profile/farhan.sadeek
