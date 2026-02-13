@@ -30,16 +30,15 @@ pre, code {
 library(tidyverse)
 library(ggplot2)
 library(igraph)
+library(igraphdata)
+library(sand)
 library(ggraph)
-library(googlesheets4)
-library(network)
-library(sna)
 ```
 
 ## Ego Network
 
 ```{r}
-# Reading the dataset
+# Reading the ego network dataset
 ego_net_link = "https://notes.farhansadeek.com/dartmouth/math7/homework/Ego_Network.csv"
 ego <- read.csv(ego_net_link)
 ego_network <- graph_from_data_frame(ego, directed = FALSE)
@@ -47,22 +46,29 @@ plot(ego_network, vertex.size=5, vertex.label=NA)
 ```
 
 ## Flight Network
-First of all, we need to read the dataset. Since we are reading a large amount of data, it's scattered across multiple CSV files so we have to read and combine all of them. Now, we will first look at the files in the directory to make exist there
+
+First of all, we need to read the dataset. Since we are reading a large amount of data, it's scattered across multiple CSV files so we have to read and combine all of them. Now, we will first look at the files in the directory to make sure they exist there.
+
 ```{r, results='hide'}
 ## Listing all the files in the 'dataset' directory
-files <- list.files(path = "dataset", pattern = "flightlist_.*\\.csv$", full.names = TRUE) 
+files <- list.files(path = "dataset", pattern = "flightlist_.*\\.csv$", full.names = TRUE)
 files
 ```
+
 Perfect, all the files exist in that dataframe. Now we will read all of them in order and combine that into a massive dataset.
+
 ```{r, results='hide'}
 df <- files |> map_df(~read_csv(.))
 ```
+
 Since we just read a massive amount of data, let's check how much memory it is using in the RAM.
 
 ```{r}
 format(object.size(df), units = "Gb")
 ```
-Since we are using about 5 GB of memory, we will take a small (1%) random sample of the data to work with just for efficiency purposes.
+
+Since we are using about 5 GB of memory, we will take a small (0.01%) random sample of the data to work with just for efficiency purposes.
+
 ```{r}
 sampled_df <- df |> slice_sample(prop = 0.0001)
 ```
@@ -75,18 +81,17 @@ sampled_df <- sampled_df |> select(origin, destination, latitude_1, longitude_1,
 
 ```{r, echo=FALSE}
 format(object.size(sampled_df), units = "Mb")
-# View(sampled_df)
 ```
 
 Great, now that we have the data we need we can finally start working on it. However, we can't work with this immediately we need to convert this into a list of vertex, and edge list. We will create the list of edges first, which is just the count from the origin to the destination, and this would be a directed graph.
 
 ```{r}
 edges <- sampled_df |> group_by(origin, destination) |> summarise(weight = n())
-# View(edges)
 ```
-Now, we will create the list of vertices, which is just the airports in the dataset. For this since we have destinations and origins we will first get all the origin nodes, and their information, and then the destinations and their information. When we combine them then we get the full list of nodes.
-```{r}
 
+Now, we will create the list of vertices, which is just the airports in the dataset. For this since we have destinations and origins we will first get all the origin nodes, and their information, and then the destinations and their information. When we combine them then we get the full list of nodes.
+
+```{r}
 origins <- sampled_df |>
   select(name = origin, lat = latitude_1, long = longitude_1)
 
@@ -96,7 +101,6 @@ destinations <- sampled_df |>
 nodes <- bind_rows(origins, destinations) |>
   distinct(name, .keep_all = TRUE) |>
   na.omit()
-# View(nodes) Test if it works
 ```
 
 So, now we have the nodes and the edges to work with. First we make this into a graph if we want to be able to do anything with it. We will also remove all the self-loops.
@@ -106,64 +110,352 @@ flight_network <- graph_from_data_frame(d = edges, vertices = nodes, directed = 
 flight_network <- simplify(flight_network, remove.multiple = TRUE, remove.loops = TRUE)
 flight_network
 ```
-So now, we have all the edges that we need to work with. 
-## Vertex and Edge Characteristics
-```{r}
-hist(degree(flight_network), 
-     col = "blue", 
-     xlim = c(0, 150), 
-     breaks = 150,
-     xlab = "Vertex Degree", 
-     ylab = "Frequency", 
-     main = "Degree Distribution")
-```
+
+### Basic Graph Properties
 
 ```{r}
+cat("Number of airports (vertices):", vcount(flight_network), "\n")
+cat("Number of flight routes (edges):", ecount(flight_network), "\n")
+cat("Is the graph simple?", is_simple(flight_network), "\n")
+cat("Is the graph connected (weakly)?", is_connected(flight_network, mode="weak"), "\n")
+cat("Is the graph connected (strongly)?", is_connected(flight_network, mode="strong"), "\n")
+cat("Diameter:", diameter(flight_network, weights=NA), "\n")
+cat("Average path length:", mean_distance(flight_network), "\n")
+```
+
+## Vertex and Edge Characteristics
+
+### Degree Distribution
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+par(mfrow=c(1,2))
+hist(igraph::degree(flight_network),
+     col = "blue",
+     xlim = c(0, max(igraph::degree(flight_network))),
+     breaks = 50,
+     xlab = "Vertex Degree",
+     ylab = "Frequency",
+     main = "Degree Distribution")
+
+# Log-log degree distribution
 dd.flights <- degree_distribution(flight_network)
-max_d <- max(degree(flight_network))
+max_d <- max(igraph::degree(flight_network))
 d <- 0:max_d
 ind <- (dd.flights != 0)
-plot(d[ind], dd.flights[ind], 
-     log = "xy", 
+plot(d[ind], dd.flights[ind],
+     log = "xy",
      col = "blue",
-     xlab = "Log-Degree", 
+     xlab = "Log-Degree",
      ylab = "Log-Intensity",
      main = "Log-Log Degree Distribution")
 ```
 
+### Vertex Strength
 
 ```{r}
-a.nn.deg.flight <- graph.knn(flight_network, V(flight_network), weights = E(flight_network)$weight)$knn 
-plot(degree(flight_network), a.nn.deg.flight, 
-     log = "xy", 
+#| fig-width: 10
+#| fig-height: 5
+par(mfrow=c(1,2))
+hist(igraph::degree(flight_network), col="lightblue",
+     xlab="Vertex Degree", ylab="Frequency", main="Degree")
+hist(strength(flight_network), col="pink",
+     xlab="Vertex Strength", ylab="Frequency", main="Strength")
+```
+
+### Average Neighbor Degree
+
+```{r}
+a.nn.deg.flight <- knn(flight_network, V(flight_network))$knn
+plot(igraph::degree(flight_network), a.nn.deg.flight,
+     log = "xy",
      col = "blue",
-     xlab = "Log Vertex Degree", 
+     xlab = "Log Vertex Degree",
      ylab = "Log Average Neighbor Degree",
-     main = "Log-Log Degree vs Average Neighbor Degree")
+     main = "Degree vs Average Neighbor Degree")
+```
+
+### Vertex Centrality Measures
+
+```{r}
+# Top 10 airports by different centrality measures
+deg <- igraph::degree(flight_network, mode="all")
+cat("Top 10 by Degree:\n")
+head(sort(deg, decreasing=TRUE), 10)
+
+cat("\nTop 10 by In-Degree:\n")
+head(sort(igraph::degree(flight_network, mode="in"), decreasing=TRUE), 10)
+
+cat("\nTop 10 by Out-Degree:\n")
+head(sort(igraph::degree(flight_network, mode="out"), decreasing=TRUE), 10)
 ```
 
 ```{r}
-# 1. Identify the top 200 airports by degree
-top_nodes <- order(degree(flight_network), decreasing=TRUE)[1:200]
+# Closeness centrality (top 10)
+cl <- igraph::closeness(flight_network, mode="all")
+cat("Top 10 by Closeness Centrality:\n")
+head(sort(cl, decreasing=TRUE), 10)
+```
 
-# 2. Create a subnetwork of just these hubs [cite: 178-180]
+```{r}
+# Betweenness centrality (top 10)
+btwn <- igraph::betweenness(flight_network)
+cat("Top 10 by Betweenness Centrality:\n")
+head(sort(btwn, decreasing=TRUE), 10)
+```
+
+```{r}
+# Hub and authority scores
+cat("Top 10 Hub Airports:\n")
+hub_scores <- hub_score(flight_network)$vector
+head(sort(hub_scores, decreasing=TRUE), 10)
+
+cat("\nTop 10 Authority Airports:\n")
+auth_scores <- authority_score(flight_network)$vector
+head(sort(auth_scores, decreasing=TRUE), 10)
+```
+
+### Target Plot: Top 200 Flight Hubs
+
+```{r}
+#| fig-width: 10
+#| fig-height: 10
+# Four centrality target plots for top hubs
+# Load sna and network here for gplot.target
+library(network)
+library(sna)
+
+n_top <- min(200, vcount(flight_network))
+top_nodes <- order(igraph::degree(flight_network), decreasing=TRUE)[1:n_top]
 hubs_subgraph <- induced_subgraph(flight_network, top_nodes)
 
-# 3. Convert ONLY the subnetwork to sna format [cite: 1154]
-A_sub <- as.matrix(get.adjacency(hubs_subgraph))
-net_sub <- network::as.network.matrix(A_sub)
+A_sub <- as.matrix(as_adjacency_matrix(hubs_subgraph))
+net_sub <- as.network.matrix(A_sub)
 
-# 4. Plot (This should take seconds instead of minutes) [cite: 1126-1133]
-library(sna)
-sna::gplot.target(net_sub, 
-                  sna::degree(net_sub), 
-                  main="Top 200 Flight Hubs",
-                  circ.lab = FALSE, 
-                  circ.col="skyblue", 
-                  usearrows = FALSE, 
-                  edge.col="darkgray")
+par(mfrow=c(2,2))
+
+gplot.target(net_sub, sna::degree(net_sub),
+    main="Degree", circ.lab = FALSE, circ.col="skyblue",
+    usearrows = FALSE, edge.col="darkgray")
+
+gplot.target(net_sub, sna::closeness(net_sub),
+    main="Closeness", circ.lab = FALSE, circ.col="skyblue",
+    usearrows = FALSE, edge.col="darkgray")
+
+gplot.target(net_sub, sna::betweenness(net_sub),
+    main="Betweenness", circ.lab = FALSE, circ.col="skyblue",
+    usearrows = FALSE, edge.col="darkgray")
+
+gplot.target(net_sub, sna::evcent(net_sub),
+    main="Eigenvector", circ.lab = FALSE, circ.col="skyblue",
+    usearrows = FALSE, edge.col="darkgray")
+```
+
+### Edge Betweenness
+
+```{r}
+# Top edges by betweenness
+eb <- igraph::edge_betweenness(flight_network)
+top_edges <- E(flight_network)[order(eb, decreasing=TRUE)[1:10]]
+cat("Top 10 edges by betweenness:\n")
+print(top_edges)
+```
+
+## Network Cohesion
+
+### Clique Analysis
+
+```{r}
+# Clique census (on undirected version)
+flight_undirected <- igraph::as.undirected(flight_network, mode="collapse")
+clique_sizes <- sapply(igraph::cliques(flight_undirected), length)
+cat("Clique census:\n")
+table(clique_sizes)
+
+cat("\nClique number:", igraph::clique_num(flight_undirected), "\n")
+```
+
+### Density and Clustering
+
+```{r}
+cat("Graph density:", igraph::edge_density(flight_network), "\n")
+cat("Global transitivity:", igraph::transitivity(flight_undirected), "\n")
 ```
 
 ```{r}
+# Ego-centric density for top hub airports
+top_airport <- V(flight_network)$name[which.max(igraph::degree(flight_network))]
+ego.top <- igraph::induced_subgraph(flight_network,
+    igraph::neighborhood(flight_network, 1, which.max(igraph::degree(flight_network)))[[1]])
+cat("Overall density:", igraph::edge_density(flight_network), "\n")
+cat("Top hub (", top_airport, ") ego density:", igraph::edge_density(ego.top), "\n")
+```
 
+```{r}
+# Local clustering for top 5 airports by degree
+top5 <- order(igraph::degree(flight_undirected), decreasing=TRUE)[1:5]
+cat("Local transitivity for top 5 airports:\n")
+local_cl <- igraph::transitivity(flight_undirected, "local", vids=top5)
+names(local_cl) <- V(flight_undirected)$name[top5]
+print(local_cl)
+```
+
+### Connectivity
+
+```{r}
+# Component analysis
+comps <- igraph::decompose(flight_network, mode="weak")
+comp_sizes <- sapply(comps, igraph::vcount)
+cat("Number of weakly connected components:", length(comps), "\n")
+cat("Component size distribution:\n")
+table(comp_sizes)
+
+# Giant component
+flight.gc <- comps[[which.max(comp_sizes)]]
+cat("\nGiant component:", igraph::vcount(flight.gc), "vertices,",
+    igraph::ecount(flight.gc), "edges\n")
+cat("Fraction of vertices in giant component:",
+    igraph::vcount(flight.gc)/igraph::vcount(flight_network), "\n")
+```
+
+```{r}
+# Small world properties of giant component
+cat("Average path length:", igraph::mean_distance(flight.gc), "\n")
+cat("Diameter:", igraph::diameter(flight.gc, weights=NA), "\n")
+flight.gc.undirected <- igraph::as.undirected(flight.gc, mode="collapse")
+cat("Transitivity:", igraph::transitivity(flight.gc.undirected), "\n")
+```
+
+```{r}
+# Vertex and edge connectivity of giant component
+cat("Vertex connectivity:", igraph::vertex_connectivity(flight.gc), "\n")
+cat("Edge connectivity:", igraph::edge_connectivity(flight.gc), "\n")
+
+# Articulation points (cut vertices)
+cut.verts <- igraph::articulation_points(flight.gc)
+cat("Number of articulation points:", length(cut.verts), "\n")
+cat("Fraction of vertices that are cut vertices:",
+    length(cut.verts)/igraph::vcount(flight.gc), "\n")
+```
+
+```{r}
+# Dyad census for the directed flight network
+igraph::dyad_census(flight_network)
+```
+
+```{r}
+# Reciprocity
+cat("Reciprocity (default):", igraph::reciprocity(flight_network, mode="default"), "\n")
+cat("Reciprocity (ratio):", igraph::reciprocity(flight_network, mode="ratio"), "\n")
+```
+
+### K-Core Decomposition
+
+```{r}
+# K-core decomposition
+cores <- igraph::coreness(flight_undirected)
+cat("Max coreness:", max(cores), "\n")
+cat("Coreness distribution:\n")
+table(cores)
+```
+
+```{r}
+# K-core target plot for top hubs
+A_sub <- as.matrix(igraph::as_adjacency_matrix(hubs_subgraph))
+net_sub <- as.network.matrix(A_sub)
+hubs_undirected <- igraph::as.undirected(hubs_subgraph, mode="collapse")
+hub_cores <- igraph::coreness(hubs_undirected)
+gplot.target(net_sub, hub_cores, circ.lab = FALSE,
+    circ.col="skyblue", usearrows = FALSE,
+    vertex.col=hub_cores, edge.col="darkgray",
+    main="K-Core Decomposition (Top Hubs)")
+```
+
+## Community Detection
+
+```{r}
+# Fast greedy community detection on the undirected network
+fc <- igraph::cluster_fast_greedy(flight_undirected)
+cat("Number of communities:", length(fc), "\n")
+cat("Community sizes:\n")
+igraph::sizes(fc)
+```
+
+```{r}
+# Modularity of the partition
+cat("Modularity:", igraph::modularity(fc), "\n")
+```
+
+```{r}
+# Community membership of top airports
+top10 <- order(igraph::degree(flight_undirected), decreasing=TRUE)[1:10]
+cat("Community membership of top 10 airports:\n")
+mem <- igraph::membership(fc)[top10]
+names(mem) <- V(flight_undirected)$name[top10]
+print(mem)
+```
+
+```{r}
+# Plot communities on the network
+plot(fc, flight_undirected, vertex.size=3, vertex.label=NA,
+     main="Flight Network Communities")
+```
+
+```{r}
+# Dendrogram
+library(ape)
+igraph::plot_dendrogram(fc, mode="phylo", cex=0.3)
+title("Flight Network Community Dendrogram")
+```
+
+## Spectral Analysis
+
+```{r}
+# Graph Laplacian analysis on the undirected network
+k.lap <- igraph::laplacian_matrix(flight_undirected)
+eig.anal <- eigen(k.lap, symmetric=TRUE)
+
+# Plot first 50 eigenvalues
+n_eig <- min(50, igraph::vcount(flight_undirected))
+plot(eig.anal$values[1:n_eig], col="blue",
+     ylab="Eigenvalues of Graph Laplacian",
+     xlab="Index",
+     main="Eigenvalue Spectrum (First 50)")
+```
+
+```{r}
+# Fiedler vector analysis
+n_v <- igraph::vcount(flight_undirected)
+f.vec <- eig.anal$vectors[, n_v - 1]
+
+# Color by community membership for comparison
+f.colors <- igraph::membership(fc)
+plot(f.vec, pch=16, col=f.colors,
+     xlab="Airport Index",
+     ylab="Fiedler Vector Entry",
+     main="Fiedler Vector (Spectral Bipartition)")
+abline(0, 0, lwd=2, col="lightgray")
+```
+
+## Assortativity
+
+```{r}
+# Degree assortativity
+cat("Degree assortativity:", igraph::assortativity_degree(flight_network), "\n")
+```
+
+## Network Visualization (ggraph)
+
+```{r}
+#| fig-width: 10
+#| fig-height: 10
+# Visualize top hub subnetwork using ggraph
+ggraph(hubs_subgraph, layout = "fr") +
+  geom_edge_link(alpha = 0.1, color = "gray50") +
+  geom_node_point(aes(size = igraph::degree(hubs_subgraph)),
+                  color = "steelblue", alpha = 0.7) +
+  scale_size_continuous(range = c(1, 8), name = "Degree") +
+  theme_void() +
+  labs(title = "Top Flight Hub Network (Fruchterman-Reingold Layout)")
 ```
