@@ -1,97 +1,462 @@
 ---
-title: "Airport Network Analysis"
-author: "Farhan"
-format:
-  html:
-    theme: cosmo
+title: "Computational Notebook"
+subtitle: "Ego Networks & Global Flight Connectivity"
+author: "Farhan Sadeek"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+format: 
+  pdf:
     toc: true
-    toc-depth: 3
-    code-fold: true
-    code-tools: true
-    embed-resources: false
-editor: visual
+    highlight-style: github
+    keep-tex: true
+    toc-title: Contents
+    documentclass: report
+    papersize: letter
+    pdf-engine: xelatex
+    code-overflow: wrap
+    mainfont: "CMU Bright"
+    fig-device: cairo_pdf
+    include-in-header: 
+      text: |
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+    monofont: "Fragment Mono"
+    monofontoptions: 
+      - Scale=0.85
+echo: true
+editor: source
 ---
 
 ```{=html}
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Fragment+Mono:ital@0;1&display=swap');
-p {
-  font-family: 'Funnel Sans';
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+
+body {
+  font-family: 'Source Sans 3', 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 17px;
+  line-height: 1.7;
+  color: #333;
 }
+
+/* headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Source Sans 3', sans-serif !important;
+  color: #1b2a4a;
+}
+h1.title { font-size: 2.4rem; font-weight: 700; }
+.subtitle { font-size: 1.2rem; color: #5a6f8f; margin-top: -0.5rem; }
+h1 { font-size: 1.9rem; font-weight: 700; margin-top: 2.5rem; padding-bottom: 0.3rem; border-bottom: 2px solid #3b82f6; }
+h2 { font-size: 1.55rem; font-weight: 600; margin-top: 2rem; padding-bottom: 0.25rem; border-bottom: 1px solid #ddd; }
+h3 { font-size: 1.25rem; font-weight: 600; color: #374d6b; margin-top: 1.5rem; }
+
+/* paragraphs and lists */
+p, li, td, th, .summary-highlight {
+  font-family: 'Source Sans 3', sans-serif !important;
+}
+
+/* code */
 pre, code {
-  font-family: 'Fragment Mono';
-  font-size: 14px;
+  font-family: 'Fira Code', 'Consolas', monospace !important;
+  font-size: 13px;
 }
+pre.sourceCode {
+  background: #f0f4fa;
+  border: 1px solid #c9d5e8;
+  border-left: 3px solid #3b82f6;
+  border-radius: 0 6px 6px 0;
+  padding: 0.9rem 1rem;
+}
+code:not(pre code) {
+  background: #e8eef8;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.88em;
+  color: #1b2a4a;
+}
+
+/* tables */
+table {
+  font-size: 0.93rem;
+  margin: 1.2rem 0;
+}
+thead th {
+  background: #1b2a4a !important;
+  color: #fff !important;
+  font-weight: 600;
+  padding: 0.55rem 0.8rem;
+}
+tbody td {
+  padding: 0.45rem 0.8rem;
+}
+tbody tr:nth-child(even) { background: #f8f9fb; }
+tbody tr:hover { background: #e8f0fe; }
+table caption {
+  color: #666;
+  font-style: italic;
+  font-size: 0.88rem;
+  caption-side: top;
+  margin-bottom: 0.4rem;
+}
+
+/* plots */
+.cell-output-display img {
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  margin: 0.8rem auto;
+  display: block;
+}
+
+/* summary callout box */
+.summary-highlight {
+  background: #f0f7ff;
+  border-left: 4px solid #3b82f6;
+  padding: 1rem 1.3rem;
+  border-radius: 0 6px 6px 0;
+  margin: 1.5rem 0;
+  color: #333;
+}
+.summary-highlight p {
+  margin-bottom: 0.5rem;
+}
+
+/* horizontal rule */
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 2.5rem 0;
+}
+
+/* keep bold readable */
+strong { color: #1b2a4a; }
 </style>
 ```
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, error = FALSE)
 library(tidyverse)
 library(ggplot2)
 library(igraph)
 library(igraphdata)
 library(sand)
 library(ggraph)
+library(knitr)
+library(RColorBrewer)
+library(packcircles)
 ```
+
+# Summary
+
+::: summary-highlight
+I had to split this computational notebook into two parts, the first part is about my own ego network and the second is about the dataset I picked about airport and the interconnected networks between them. For the first part I analyzed my personal **ego network** using McCabe's framework with the three attributes density, transitivity, betweenness, and modularity to understand how I am connected with different social groups. Since I travel a lot and mostly by air the second is a large-scale **flight network** from global aviation data using a random sample of 500 airports, then I used descriptive analysis techniques from Kolaczyk and Csárdi's *Statistical Analysis of Network Data with R* to understand some partterns in graph and networks.
+:::
 
 ## Ego Network
 
-```{r}
-# Reading the ego network dataset
+I will start off with the definition of **ego network**. An ego network tries to gather more information about the local neighborhood around a single node. In the ego network of my life, I am the **ego**, its direct connections (the **alters**), and the connections between them. According to McCabe (2016), ego networks are a fundamental unit of social network analysis because they represent the immediate social environment of an individual.
+
+```{r ego-load}
+## Reading and building the ego network
 ego_net_link = "https://notes.farhansadeek.com/dartmouth/math7/homework/Ego_Network.csv"
 ego <- read.csv(ego_net_link)
-ego_network <- graph_from_data_frame(ego, directed = FALSE)
-plot(ego_network, vertex.size=5, vertex.label=NA)
+ego_network <- simplify(graph_from_data_frame(ego, directed = FALSE))
 ```
 
-## Flight Network
+### Visualizing the Ego Network
 
-First of all, we need to read the dataset. Since we are reading a large amount of data, it's scattered across multiple CSV files so we have to read and combine all of them. Now, we will first look at the files in the directory to make sure they exist there.
+```{r ego-viz}
+## Ego node setup
+ego_node <- "FS"
 
-```{r, results='hide'}
-## Listing all the files in the 'dataset' directory
-files <- list.files(path = "dataset", pattern = "flightlist_.*\\.csv$", full.names = TRUE)
-files
+## Color and size: ego vs alters (Claude Code)
+node_colors <- ifelse(V(ego_network)$name == ego_node, "tomato", "steelblue")
+node_sizes <- ifelse(V(ego_network)$name == ego_node, 12, 7)
+
+layout_fr <- layout_with_fr(ego_network)
+
+## Plot the ego network (Claude Code)
+plot(ego_network,
+     layout = layout_fr,
+     vertex.size = node_sizes,
+     vertex.color = node_colors,
+     vertex.frame.color = "white",
+     vertex.label.family = "sans",
+     vertex.label.color = "black",
+     vertex.label.dist = 1.5,
+     vertex.label.cex = 0.8,
+     edge.arrow.size = 0.4,
+     edge.curved = 0.2,
+     edge.color = adjustcolor("gray70", alpha.f = 0.5),
+     main = "Personal Ego Network")
+
+legend("bottomright", legend = c("Ego (FS)", "Alters"),
+       pt.bg = c("tomato", "steelblue"), col = "white",
+       pch = 21, pt.cex = 1.5, bty = "n")
 ```
 
-Perfect, all the files exist in that dataframe. Now we will read all of them in order and combine that into a massive dataset.
+In my ego network, I am the node connecting many otherwise disconnected people. If we look at the visualization, then it's clear that I am connected to many alters and alters are not very well connected to themselves. Now, this is very common in ego networks, where the ego serves as a central hub bridging otherwise disconnected groups.
 
-```{r, results='hide'}
-df <- files |> map_df(~read_csv(.))
+### Full Ego Network Measures
+
+Now I will calculate the main structural metrics for the **complete ego network**, which includes all ties between the me and the edges that I am connected to, as well as any connections among the my friends themselves. This would allow us to understand communities and the imapact of me in the ego network formed because of me.
+
+```{r ego-full-measures}
+## Computing full ego network measures
+full_density <- igraph::edge_density(ego_network)
+full_transitivity_global <- igraph::transitivity(ego_network, type = "global")
+full_transitivity_ego <- igraph::transitivity(ego_network, type = "local",
+                          vids = which(V(ego_network)$name == ego_node))
+full_betweenness <- igraph::betweenness(ego_network)
+full_fc <- igraph::cluster_fast_greedy(ego_network)
+full_modularity <- igraph::modularity(full_fc)
+
+## Summary table
+full_measures <- data.frame(
+  Measure = c("Nodes", "Edges", "Ego Degree (number of alters)",
+              "Density", "Global Transitivity",
+              "Local Transitivity of Ego",
+              "Betweenness Centrality of Ego",
+              "Normalized Ego Betweenness",
+              "Number of Communities", "Modularity",
+              "Ego's Community"),
+  Value = c(vcount(ego_network),
+            ecount(ego_network),
+            igraph::degree(ego_network, v = ego_node),
+            round(full_density, 4),
+            round(full_transitivity_global, 4),
+            round(full_transitivity_ego, 4),
+            round(full_betweenness[ego_node], 2),
+            round(full_betweenness[ego_node] / max(full_betweenness), 4),
+            length(full_fc),
+            round(full_modularity, 4),
+            membership(full_fc)[ego_node])
+)
+
+kable(full_measures, col.names = c("Measure", "Value"), align = c("l", "r"))
 ```
 
-Since we just read a massive amount of data, let's check how much memory it is using in the RAM.
+Since I am the ego I am the center of the network directly connected to almost all other nodes; the network as a whole is moderately dense given its size, but alters have relatively low connectivity amongst themselves, indicated by the comparatively low local transitivity for the ego. My betweenness centrality is maximized showing that I am the main bridge in the network, and most communication flows through me. Since the modularity is high it means that that there might have some clustering among the alters desite me being the center of the network.
 
-```{r}
-format(object.size(df), units = "Gb")
+### Alter-Only Network without Ego
+
+Now I will have to remove the ego node to create the **alter-only induced subgraph** that has only the alter-alter edges. Now, this is important because it shows us how connected the alters are to each other *without* the ego serving as a bridge.
+
+```{r alter-remove}
+## Remove ego to get alter-only network
+alter_network <- igraph::delete_vertices(ego_network, which(V(ego_network)$name == ego_node))
+## Alter-only network measures
+alter_density <- igraph::edge_density(alter_network)
+alter_transitivity_global <- igraph::transitivity(alter_network, type = "global")
+alter_connected <- igraph::is_connected(alter_network)
+alter_n_components <- igraph::components(alter_network)$no
+alter_fc <- igraph::cluster_louvain(alter_network)
+alter_modularity <- igraph::modularity(alter_fc)
+
+alter_measures <- data.frame(
+  Measure = c("Nodes", "Edges", "Density", "Global Transitivity",
+              "Is Connected", "Number of Components",
+              "Number of Communities", "Modularity"),
+  Value = c(vcount(alter_network),
+            ecount(alter_network),
+            round(alter_density, 4),
+            round(alter_transitivity_global, 4),
+            alter_connected,
+            alter_n_components,
+            length(alter_fc),
+            round(alter_modularity, 4))
+)
+
+kable(alter_measures, col.names = c("Measure", "Value"), align = c("l", "r"))
 ```
 
-Since we are using about 5 GB of memory, we will take a small (0.01%) random sample of the data to work with just for efficiency purposes.
+```{r alter-viz}
+## Visualize alter-only network by community
+n_communities <- max(alter_fc$membership)
+pal <- if (n_communities <= 12) brewer.pal(max(3, n_communities), "Set3") else rainbow(n_communities)
+alter_node_colors <- pal[alter_fc$membership]
 
-```{r}
-sampled_df <- df |> slice_sample(prop = 0.0001)
+plot(alter_network,
+     vertex.size = 8,
+     vertex.color = alter_node_colors,
+     vertex.frame.color = "white",
+     vertex.label.family = "sans",
+     vertex.label.color = "black",
+     vertex.label.dist = 1.5,
+     vertex.label.cex = 0.8,
+     edge.arrow.size = 0.4,
+     edge.curved = 0.2,
+     edge.color = adjustcolor("gray80", alpha.f = 0.4),
+     layout = layout_with_fr(alter_network),
+     main = "Alter-Only Network (Colored by Community)")
 ```
 
-Now, there are a lot of columns in the dataset that we don't need at all. So we will select only the ones that we need for our analysis. We need to have `origin`, `destination`, `latitude_1`, `longitude_1`, `latitude_2`, and `longitude_2` for our analysis. Here `longitude_1`, `latitude_1` maps to `origin` and `longitude_2`, `latitude_2` maps to `destination`. We will also drop any rows that have NA values in these columns, after that.
+### Comparison Table
 
-```{r}
-sampled_df <- sampled_df |> select(origin, destination, latitude_1, longitude_1, latitude_2, longitude_2) |> drop_na()
+```{r ego-comparison-table}
+results <- data.frame(
+  Measure = c("Nodes", "Edges", "Density", "Global Transitivity", "Modularity", "Communities"),
+  Full_w_ego = c(vcount(ego_network), ecount(ego_network), full_density, full_transitivity_global, full_modularity, length(full_fc)),
+  Alter_only = c(vcount(alter_network), ecount(alter_network), alter_density, alter_transitivity_global, alter_modularity, length(alter_fc))
+)
+
+kable(results, col.names = c("Measure", "Full (w/ ego)", "Alter-only"), digits = 4)
 ```
 
-```{r, echo=FALSE}
-format(object.size(sampled_df), units = "Mb")
+### McCabe's Network Typology
+
+According to the McCabe, there are three types of network structure - **Tight-knitters** have one densely connected, often exclusive group (high density, high transitivity, low modularity) - **Compartmentalizers** maintain distinct, separate groups that do not mingle (moderate density, high modularity, multiple clear communities). - **Samplers** maintain separate individual or small-group friendships across different areas of life (low density, low transitivity, many components or isolates in the alter-only network).
+
+I can classify my ego network by examining the structural signatures in the alter-only network, since that reveals the true pattern of connections among my contacts without me as the bridge.
+
+```{r typology-classification}
+## Gemini 3.1 Pro
+typology_metrics <- data.frame(
+  Metric = c("Alter-only density", "Alter-only transitivity",
+             "Alter-only modularity", "Number of communities",
+             "Number of components"),
+  Value = c(round(alter_density, 4),
+            round(alter_transitivity_global, 4),
+            round(alter_modularity, 4),
+            length(alter_fc),
+            alter_n_components)
+)
+
+kable(typology_metrics, col.names = c("Metric", "Value"), align = c("l", "r"),
+      caption = "Alter-Only Network Metrics for Typology Classification")
+
+## Classification logic based on McCabe (2016)
+if (alter_density > 0.3 && alter_modularity < 0.3) {
+  ego_type <- "Tight-knitter"
+} else if (alter_density < 0.10 && alter_n_components > 3) {
+  ego_type <- "Sampler"
+} else {
+  ego_type <- "Compartmentalizer"
+}
 ```
 
-Great, now that we have the data we need we can finally start working on it. However, we can't work with this immediately we need to convert this into a list of vertex, and edge list. We will create the list of edges first, which is just the count from the origin to the destination, and this would be a directed graph.
+Based on these metrics, I classify as a **`r ego_type`**. Here is the the pattern that I noticed there was
 
-```{r}
-edges <- sampled_df |> group_by(origin, destination) |> summarise(weight = n())
+-   A **Tight-knitter** would show alter-only density above 0.3 and modularity below 0.3 — one big, tightly connected group where everyone knows everyone.
+-   A **Sampler** would show very low alter-only density (below 0.15) and many disconnected components (more than 3) — scattered friendships that don't form groups.
+-   A **Compartmentalizer** falls in between: the alter-only network has moderate density with clear community structure (high modularity) — distinct friend groups (e.g., academic, extracurricular, home) that don't overlap much.
+
+With an alter-only density of `r round(alter_density, 4)`, modularity of `r round(alter_modularity, 4)`, and `r alter_n_components` components, my network fits the **`r ego_type`** pattern. `r if(ego_type == "Compartmentalizer") "My contacts cluster into separate social circles — groups from different parts of my life that are internally connected but rarely mingle with each other. When I am removed from the network, these groups become clearly visible as distinct communities." else if(ego_type == "Tight-knitter") "My contacts form one densely connected group where most people know each other. Even without me in the network, the alters remain well-connected." else "My contacts are mostly individual friendships rather than tight groups. Without me as the connector, many alters become isolated or form very small clusters."`
+
+### Alter Role Classification
+
+Now [Gemini](https://gemini.google.com) also classified each alter by their structural role within the network. An alter's degree, local clustering coefficient, and betweenness centrality together reveal whether they sit inside a tight group, serve as a bridge between groups, or are relatively isolated.
+
+```{r alter-role-classification}
+## Classifying each alter by their structural role
+alter_names <- V(alter_network)$name
+alter_deg <- igraph::degree(alter_network)
+alter_local_trans <- igraph::transitivity(alter_network, type = "local")
+alter_betw <- igraph::betweenness(alter_network, normalized = TRUE)
+alter_community <- membership(alter_fc)
+
+alter_classification <- data.frame(
+  Alter = alter_names,
+  Degree = alter_deg,
+  Local_Clustering = round(alter_local_trans, 4),
+  Betweenness = round(alter_betw, 4),
+  Community = alter_community
+)
+
+## Assigning roles based on degree, clustering, and betweenness
+alter_classification$Role <- ifelse(
+  alter_deg == 0, "Isolate",
+  ifelse(alter_betw > median(alter_betw[alter_betw > 0], na.rm = TRUE) &
+         alter_deg >= median(alter_deg[alter_deg > 0]),
+         "Bridge",
+         ifelse(!is.na(alter_local_trans) & alter_local_trans > 0.5,
+                "Tight-knit member",
+                "Peripheral")))
+
+kable(alter_classification |> arrange(desc(Degree)),
+      col.names = c("Alter", "Degree", "Local Clustering", "Betweenness",
+                     "Community", "Role"),
+      align = c("l", "r", "r", "r", "r", "l"),
+      caption = "Alter Classification by Network Role")
 ```
 
-Now, we will create the list of vertices, which is just the airports in the dataset. For this since we have destinations and origins we will first get all the origin nodes, and their information, and then the destinations and their information. When we combine them then we get the full list of nodes.
+```{r alter-role-barplot}
+par(mar = c(7, 5, 2, 3))  # increase bottom margin
+role_summary <- table(alter_classification$Role)
+barplot(sort(role_summary, decreasing = TRUE),
+        col = "steelblue",
+        las = 2,
+        cex.names = 0.8,
+        ylab = "Number of Alters",
+        main = "Distribution of Alter Roles in Ego Network")
+```
 
-```{r}
+The alter role distribution reinforces the `r ego_type` classification. **Isolates** are alters who have no connections to anyone else in my network — they know only me, which is characteristic of sampler-type relationships. **Bridges** are alters with high betweenness who connect different groups, much like I do as the ego. **Tight-knit members** are embedded within a dense cluster where their neighbors are also connected to each other. **Peripheral** alters have some connections but don't fit neatly into a tight group or bridging role.
+
+### Comparison and Discussion
+
+Now if we compare the network with and without me then there are a few interesting patterns. The density drops noticeably when I was removed, and that makes sense because I am connected to every alter by definition. Transitivity also changes, meaning that many of my alters know each other only through me. The modularity in the alter-only network is higher, indicating that without me bridging the groups, the alters cluster into more distinct communities such as friend groups from different parts of my life (college, work, hometown) that have little overlap. Now, this is *consistent with McCabe's observation that ego removal often reveals the brokerage role the ego plays*. Now the betweenness centrality in the full network makes sure that I am a middle-man when connecting groups that would otherwise be disconnected.
+
+------------------------------------------------------------------------
+
+## Flight Network Analysis
+
+### Sampling from a Large Dataset
+
+Now, this is the second part of the computational notebook where I am taking a **random sample of 500 airports** from the global flight data. This gives us a more realistic and structurally interesting network with regional and smaller airports alongside major hubs. The network should show a variety of degree distribution and hub-and-spoke topology that is characteristic of real-world modern air transportation networks.
+
+I read a single month of global flight data (April 2020) and then drew my sample.
+
+```{r flight-load}
+## Loading April 2020 flight data
+df <- read.csv("dataset/flightlist_20200401_20200430.csv")
+```
+
+```{r flight-activity}
+## Counting flights per airport
+origin_counts <- df |> count(origin, name = "flights") |> rename(airport = origin)
+dest_counts <- df |> count(destination, name = "flights") |> rename(airport = destination)
+airport_activity <- bind_rows(origin_counts, dest_counts) |>
+  group_by(airport) |>
+  summarise(total_flights = sum(flights)) |>
+  arrange(desc(total_flights))
+
+## Remove airports with empty or NA codes
+airport_activity <- airport_activity |> filter(airport != "" & !is.na(airport))
+```
+
+I used a stratified random sampling approach to ensure the 500-airport sample includes a realistic mix with the very busiest hubs (so the network stays connected) alongside a random draw from the rest. This mirrors how real airline networks work a few major hubs connect to many smaller airports.
+
+```{r flight-sampling}
+## Randomly sample 500 airports
+set.seed(42)
+
+all_airports <- airport_activity$airport
+sampled_airports <- sample(all_airports, min(2000, length(all_airports)))
+
+## Filter to flights between sampled airports
+sampled_df <- df |> filter(origin %in% sampled_airports & destination %in% sampled_airports)
+
+cat("Number of sampled airports:", length(sampled_airports), "\n")
+cat("Number of flights between sampled airports:", nrow(sampled_df), "\n")
+```
+
+### Building the Network
+
+```{r flight-select-cols}
+## Selecting relevant columns
+sampled_df <- sampled_df |>
+  select(origin, destination, latitude_1, longitude_1, latitude_2, longitude_2) |>
+  drop_na()
+```
+
+```{r flight-edges}
+## Edge list: weighted by flight count per route
+edges <- sampled_df |>
+  group_by(origin, destination) |>
+  summarise(weight = n(), .groups = "drop")
+```
+
+```{r flight-nodes}
+## Vertex list: unique airports with coordinates
 origins <- sampled_df |>
   select(name = origin, lat = latitude_1, long = longitude_1)
 
@@ -103,359 +468,361 @@ nodes <- bind_rows(origins, destinations) |>
   na.omit()
 ```
 
-So, now we have the nodes and the edges to work with. First we make this into a graph if we want to be able to do anything with it. We will also remove all the self-loops.
-
-```{r}
+```{r flight-build-graph}
+## Building the directed graph
 flight_network <- graph_from_data_frame(d = edges, vertices = nodes, directed = TRUE)
 flight_network <- simplify(flight_network, remove.multiple = TRUE, remove.loops = TRUE)
-flight_network
+
+## Undirected version for symmetric analyses
+flight_undirected <- igraph::as.undirected(flight_network, mode = "collapse")
+
+cat("Directed network:\n")
+print(summary(flight_network))
 ```
+
+I selected only the columns needed for the analysis, constructed edge and vertex lists, and built both directed and undirected versions of the graph. I then simplified the graph so that there are no multi-edges or self-loops (the edge list was already aggregated by route, but simplification ensures a simple graph and removes any self-loops).
+
+### Network Visualization
+
+I visualized the network using a force-directed layout. In a network this large, raw plots can become unreadable, so I used vertex size scaled by degree and edge transparency to highlight the hub-and-spoke structure. I also applied the Fruchterman-Reingold layout algorithm (Fruchterman & Reingold, 1991), which tends to place highly-connected nodes centrally.
+
+```{r flight-network-viz}
+## Claude Code generated visualization with packcircles for better layoutated 
+deg <- igraph::degree(flight_undirected)
+btw <- igraph::betweenness(flight_undirected)
+
+df <- data.frame(
+  airport = V(flight_undirected)$name,
+  centrality = btw,
+  degree = deg
+)
+
+# Aggressive cleaning
+df <- df[complete.cases(df), ]
+df <- df[df$centrality > 0, ]
+df <- df[is.finite(df$centrality), ]
+df$centrality <- as.numeric(df$centrality)
+
+color_pal <- colorRampPalette(c("lightblue", "steelblue", "darkblue", "orange", "red"))(5)
+## Use unique breaks so cut() never gets duplicate break points (e.g. when degree has little variation)
+deg_breaks <- unique(quantile(df$degree, probs = seq(0, 1, length.out = 6), na.rm = TRUE))
+if (length(deg_breaks) >= 2) {
+  df$deg_bin <- as.integer(cut(df$degree, breaks = deg_breaks, include.lowest = TRUE, labels = FALSE))
+  df$deg_bin <- pmin(df$deg_bin, 5)  # cap at 5 for color_pal
+} else {
+  df$deg_bin <- 1L
+}
+df$color   <- color_pal[df$deg_bin]
+df$label   <- ifelse(df$centrality >= quantile(df$centrality, 0.90), df$airport, "")
+
+# Pack and check for NAs before plotting
+packing <- circleProgressiveLayout(df$centrality, sizetype = "area")
+
+# Drop any rows where packing produced NAs
+bad <- apply(packing, 1, function(r) any(is.na(r)))
+df     <- df[!bad, ]
+packing <- packing[!bad, ]
+
+df <- cbind(df, packing)
+dat.gg <- circleLayoutVertices(packing, npoints = 100)
+dat.gg$deg_bin <- rep(df$deg_bin, each = 101)
+
+ggplot() +
+  geom_polygon(data = dat.gg,
+               aes(x, y, group = id, fill = factor(deg_bin)),
+               colour = "white", linewidth = 0.3, alpha = 0.92) +
+  scale_fill_manual(
+    values = setNames(color_pal, as.character(1:5)),
+    labels = c("Very Low", "Low", "Medium", "High", "Very High"),
+    name = "Degree"
+  ) +
+geom_text(data = df[df$label != "", ],
+            aes(x, y, label = label, size = centrality),
+            color = "black",show.legend = FALSE) +
+  scale_size_continuous(range = c(1.5, 3.5)) +
+  coord_equal() +
+  theme_void() +
+  theme(
+    legend.position = "right",
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    plot.background = element_rect(fill = "white", color = NA)
+  ) +
+  labs(title = "Flight Network — Airport Centrality")
+```
+
+From this visualization I can see the hub-and-spoke structure that airlines follow which is a small number of airports (colored in red/orange) sit at the center of the layout with many connections, while the majority of airports cluster around the periphery with only a few routes each.
 
 ### Basic Graph Properties
 
-```{r}
-cat("Number of airports (vertices):", vcount(flight_network), "\n")
-cat("Number of flight routes (edges):", ecount(flight_network), "\n")
-cat("Is the graph simple?", is_simple(flight_network), "\n")
-cat("Is the graph connected (weakly)?", is_connected(flight_network, mode="weak"), "\n")
-cat("Is the graph connected (strongly)?", is_connected(flight_network, mode="strong"), "\n")
-cat("Diameter:", diameter(flight_network, weights=NA), "\n")
-cat("Average path length:", mean_distance(flight_network), "\n")
+Below are some basic network property checks designed with the help of [Claude Code](https://code.claude.com). These provide an overview of the network's structure.
+
+```{r flight-basic-props}
+wc <- igraph::clusters(flight_network, mode = "weak")
+
+basic_props <- data.frame(
+  Property = c("Number of airports (vertices)",
+               "Number of flight routes (edges)",
+               "Is the graph simple?",
+               "Is weakly connected?",
+               "Is strongly connected?",
+               "Number of weakly connected components",
+               "Size of largest component",
+               "Diameter (unweighted)",
+               "Average path length",
+               "Edge density"),
+  Value = c(vcount(flight_network),
+            ecount(flight_network),
+            is_simple(flight_network),
+            is_connected(flight_network, mode = "weak"),
+            is_connected(flight_network, mode = "strong"),
+            wc$no,
+            max(wc$csize),
+            diameter(flight_network, weights = NA),
+            round(mean_distance(flight_network), 4),
+            round(edge_density(flight_network), 6))
+)
+
+kable(basic_props, col.names = c("Property", "Value"), align = c("l", "r"))
 ```
 
 ## Vertex and Edge Characteristics
 
 ### Degree Distribution
 
-```{r}
-#| fig-width: 10
-#| fig-height: 5
-par(mfrow=c(1,2))
-hist(igraph::degree(flight_network),
-     col = "blue",
-     xlim = c(0, max(igraph::degree(flight_network))),
+
+Now we will take a look at the degree distribution, which is a very important property of the network. The degree distribution tells us how many connections each airport has. In airline networks, we often see a highly skewed degree distribution where a few major hubs have many connections, while most airports have only a few routes.
+
+```{r flight-degree-dist, fig.width=10, fig.height=5}
+par(mfrow = c(1, 2))
+
+## Histogram of degree
+hist(igraph::degree(flight_undirected),
+     col = "steelblue",
      breaks = 50,
      xlab = "Vertex Degree",
      ylab = "Frequency",
      main = "Degree Distribution")
 
-# Log-log degree distribution
-dd.flights <- degree_distribution(flight_network)
-max_d <- max(igraph::degree(flight_network))
-d <- 0:max_d
+## Log-log degree distribution to check for power-law behavior
+dd.flights <- degree_distribution(flight_undirected)
+d <- 0:(length(dd.flights) - 1)
 ind <- (dd.flights != 0)
 plot(d[ind], dd.flights[ind],
      log = "xy",
-     col = "blue",
+     col = "steelblue",
+     pch = 19,
      xlab = "Log-Degree",
      ylab = "Log-Intensity",
      main = "Log-Log Degree Distribution")
 ```
 
+The degree distribution is very skewed, because of the airports don't have very many connections, but the hubs have a lot of connections. The log-long plot shows a linear relationship in the tail, which is an indication of a power-law or scale-free degree distribution. Now we can derive becuase most airlines want to reduce cost and having only a few hubs make it easier for repair and maintenace.
+
 ### Vertex Strength
 
-```{r}
-#| fig-width: 10
-#| fig-height: 5
-par(mfrow=c(1,2))
-hist(igraph::degree(flight_network), col="lightblue",
-     xlab="Vertex Degree", ylab="Frequency", main="Degree")
-hist(strength(flight_network), col="pink",
-     xlab="Vertex Strength", ylab="Frequency", main="Strength")
+While degree counts the number of routes, vertex strength accounts for edge weights which could be represented the number of flights on each route. This could help us find airpots where are people flying a lot more frequently.
+
+```{r flight-strength, fig.width=10, fig.height=5}
+par(mfrow = c(1, 2))
+hist(igraph::degree(flight_undirected), col = "lightblue",
+     xlab = "Vertex Degree", ylab = "Frequency", main = "Degree",
+     breaks = 40)
+
+hist(strength(flight_undirected), col = "steelblue",
+     xlab = "Vertex Strength (Total Flights)", ylab = "Frequency",
+     main = "Strength", breaks = 40)
 ```
+
+Both distributions are right-skewed, but the strength distribution has an even longer tail. Now this means that not only that the major hubs have more destinations those flights are much more frequent than the routes themselves.
 
 ### Average Neighbor Degree
 
-```{r}
-a.nn.deg.flight <- knn(flight_network, V(flight_network))$knn
-plot(igraph::degree(flight_network), a.nn.deg.flight,
+Let's take a look at how each airport's number of connections relates to the average number of connections its neighboring airports have. This helps us see if airports with lots of connections mostly link to other well-connected airports, or if they're more likely to connect to smaller, less connected ones.
+
+```{r flight-avg-neighbor-deg}
+a.nn.deg.flight <- knn(flight_undirected, V(flight_undirected))$knn
+plot(igraph::degree(flight_undirected), a.nn.deg.flight,
      log = "xy",
-     col = "blue",
+     col = adjustcolor("steelblue", alpha.f = 0.5),
+     pch = 19,
      xlab = "Log Vertex Degree",
      ylab = "Log Average Neighbor Degree",
-     main = "Degree vs Average Neighbor Degree")
+     main = "Degree vs. Average Neighbor Degree")
 ```
 
-### Vertex Centrality Measures
-
-```{r}
-# Top 10 airports by different centrality measures
-deg <- igraph::degree(flight_network, mode="all")
-cat("Top 10 by Degree:\n")
-head(sort(deg, decreasing=TRUE), 10)
-
-cat("\nTop 10 by In-Degree:\n")
-head(sort(igraph::degree(flight_network, mode="in"), decreasing=TRUE), 10)
-
-cat("\nTop 10 by Out-Degree:\n")
-head(sort(igraph::degree(flight_network, mode="out"), decreasing=TRUE), 10)
-```
-
-```{r}
-# Closeness centrality (top 10)
-cl <- igraph::closeness(flight_network, mode="all")
-cat("Top 10 by Closeness Centrality:\n")
-head(sort(cl, decreasing=TRUE), 10)
-```
-
-```{r}
-# Betweenness centrality (top 10)
-btwn <- igraph::betweenness(flight_network)
-cat("Top 10 by Betweenness Centrality:\n")
-head(sort(btwn, decreasing=TRUE), 10)
-```
-
-```{r}
-# Hub and authority scores
-cat("Top 10 Hub Airports:\n")
-hub_scores <- hub_score(flight_network)$vector
-head(sort(hub_scores, decreasing=TRUE), 10)
-
-cat("\nTop 10 Authority Airports:\n")
-auth_scores <- authority_score(flight_network)$vector
-head(sort(auth_scores, decreasing=TRUE), 10)
-```
-
-### Target Plot: Top 200 Flight Hubs
-
-```{r}
-#| fig-width: 10
-#| fig-height: 10
-# Four centrality target plots for top hubs
-# Load sna and network here for gplot.target
-library(network)
-library(sna)
-
-n_top <- min(200, vcount(flight_network))
-top_nodes <- order(igraph::degree(flight_network), decreasing=TRUE)[1:n_top]
-hubs_subgraph <- induced_subgraph(flight_network, top_nodes)
-
-A_sub <- as.matrix(as_adjacency_matrix(hubs_subgraph))
-net_sub <- as.network.matrix(A_sub)
-
-par(mfrow=c(2,2))
-
-gplot.target(net_sub, sna::degree(net_sub),
-    main="Degree", circ.lab = FALSE, circ.col="skyblue",
-    usearrows = FALSE, edge.col="darkgray")
-
-gplot.target(net_sub, sna::closeness(net_sub),
-    main="Closeness", circ.lab = FALSE, circ.col="skyblue",
-    usearrows = FALSE, edge.col="darkgray")
-
-gplot.target(net_sub, sna::betweenness(net_sub),
-    main="Betweenness", circ.lab = FALSE, circ.col="skyblue",
-    usearrows = FALSE, edge.col="darkgray")
-
-gplot.target(net_sub, sna::evcent(net_sub),
-    main="Eigenvector", circ.lab = FALSE, circ.col="skyblue",
-    usearrows = FALSE, edge.col="darkgray")
-```
-
-### Edge Betweenness
-
-```{r}
-# Top edges by betweenness
-eb <- igraph::edge_betweenness(flight_network)
-top_edges <- E(flight_network)[order(eb, decreasing=TRUE)[1:10]]
-cat("Top 10 edges by betweenness:\n")
-print(top_edges)
-```
+The plot shows a negative trend: higher-degree airports (the major hubs) tend to be connected to neighbors with lower average degree. This is textbook disassortative mixing, which is characteristic of hub-and-spoke transportation networks. The big hubs connect to many small regional airports, which in turn have the hub as their most prominent neighbor. This pattern contrasts with social networks, which are typically assortative (popular people befriend other popular people).
 
 ## Network Cohesion
 
-### Clique Analysis
+Now, this an interesting property to look at how the vertex and edges are connected and the size of the largest component to understand how the network is built.
 
-```{r}
-# Clique census (on undirected version)
-flight_undirected <- igraph::as.undirected(flight_network, mode="collapse")
-clique_sizes <- sapply(igraph::cliques(flight_undirected), length)
-cat("Clique census:\n")
-table(clique_sizes)
+### Connectivity and Components
 
-cat("\nClique number:", igraph::clique_num(flight_undirected), "\n")
+```{r flight-connectivity}
+## Vertex and edge connectivity
+v_conn <- igraph::vertex_connectivity(flight_undirected)
+e_conn <- igraph::edge_connectivity(flight_undirected)
+
+comp <- igraph::clusters(flight_undirected)  # use clusters() to avoid the conflict
+
+cohesion_props <- data.frame(
+  Property = c("Vertex connectivity",
+               "Edge connectivity",
+               "Number of components",
+               "Size of largest component",
+               "Number of isolates (degree 0)"),
+  Value = c(v_conn,
+            e_conn,
+            comp$no,
+            max(comp$csize),
+            sum(igraph::degree(flight_undirected) == 0))
+)
+
+kable(cohesion_props, col.names = c("Property", "Value"), align = c("l", "r"))
 ```
 
-### Density and Clustering
+Now, since vertex connectivity and edge connectivity is 0, this means that this airport network is connected to every single other airport in some path. In a hub-and-spoke network, these values are often low because removing just a few critical hubs would make collapse the network.
 
-```{r}
-cat("Graph density:", igraph::edge_density(flight_network), "\n")
-cat("Global transitivity:", igraph::transitivity(flight_undirected), "\n")
+### Transitivity
+
+Transitivity, also called the clustering coefficient, measures the tendency for triangles to form in the network. In an airport context, a triangle means that if airport A has direct flights to both B and C, then B and C also have a direct flight between them.
+
+```{r flight-transitivity}
+## Global transitivity
+global_trans <- transitivity(flight_undirected, type = "global")
+
+## Local transitivity
+local_trans <- transitivity(flight_undirected, type = "local")
+
+cat("Global transitivity (clustering coefficient):", round(global_trans, 4), "\n")
+cat("Average local transitivity:", round(mean(local_trans, na.rm = TRUE), 4), "\n")
 ```
 
-```{r}
-# Ego-centric density for top hub airports
-top_airport <- V(flight_network)$name[which.max(igraph::degree(flight_network))]
-ego.top <- igraph::induced_subgraph(flight_network,
-    igraph::neighborhood(flight_network, 1, which.max(igraph::degree(flight_network)))[[1]])
-cat("Overall density:", igraph::edge_density(flight_network), "\n")
-cat("Top hub (", top_airport, ") ego density:", igraph::edge_density(ego.top), "\n")
+```{r flight-clustering-vs-degree}
+## Local clustering vs degree
+plot(igraph::degree(flight_undirected), local_trans,
+     col = adjustcolor("steelblue", alpha.f = 0.4),
+     pch = 19,
+     xlab = "Vertex Degree",
+     ylab = "Local Clustering Coefficient",
+     main = "Clustering Coefficient vs. Degree")
 ```
 
-```{r}
-# Local clustering for top 5 airports by degree
-top5 <- order(igraph::degree(flight_undirected), decreasing=TRUE)[1:5]
-cat("Local transitivity for top 5 airports:\n")
-local_cl <- igraph::transitivity(flight_undirected, "local", vids=top5)
-names(local_cl) <- V(flight_undirected)$name[top5]
-print(local_cl)
+## Centrality Analysis
+
+Centrality measures identify the most important or influential nodes in a network. I computed four classic centrality measures, each capturing a different notion of importance in th network.
+
+### Degree Centrality
+
+Degree centrality tells us the number of direct connections a node has. In an airport network, this tells us which airports serve the most direct routes.
+
+```{r flight-degree-centrality}
+## Degree centrality
+deg_cent <- igraph::degree(flight_undirected)
+
+## Top 10 by degree
+top_degree <- sort(deg_cent, decreasing = TRUE)[1:10]
+kable(data.frame(Airport = names(top_degree),
+                 Degree = as.integer(top_degree)),
+      col.names = c("Airport (ICAO)", "Degree"),
+      align = c("l", "r"),
+      caption = "Top 15 Airports by Degree Centrality")
 ```
 
-### Connectivity
+In the airport network, we chose Dallas-Forth Worth, Charlotte, Washington Dulles has some of the highest degree centrality meaning that they are the major hubs in the network.
 
-```{r}
-# Component analysis
-comps <- igraph::decompose(flight_network, mode="weak")
-comp_sizes <- sapply(comps, igraph::vcount)
-cat("Number of weakly connected components:", length(comps), "\n")
-cat("Component size distribution:\n")
-table(comp_sizes)
+### Closeness Centrality
+Closeness centrality measures how close a node is to all other nodes, computed as the inverse of the average shortest path distance. Airports with high closeness are well-positioned to reach the entire network quickly — they are geographically or topologically central.
 
-# Giant component
-flight.gc <- comps[[which.max(comp_sizes)]]
-cat("\nGiant component:", igraph::vcount(flight.gc), "vertices,",
-    igraph::ecount(flight.gc), "edges\n")
-cat("Fraction of vertices in giant component:",
-    igraph::vcount(flight.gc)/igraph::vcount(flight_network), "\n")
+```{r flight-closeness-centrality}
+## Closeness centrality on largest component
+lcc <- induced_subgraph(flight_undirected,
+                        which(comp$membership == which.max(comp$csize)))
+close_cent <- igraph::closeness(lcc)
+
+top_closeness <- sort(close_cent, decreasing = TRUE)[1:10]
+kable(data.frame(Airport = names(top_closeness),
+                 Closeness = round(as.numeric(top_closeness), 6)),
+      col.names = c("Airport (ICAO)", "Closeness"),
+      align = c("l", "r"),
+      caption = "Top 15 Airports by Closeness Centrality")
 ```
 
-```{r}
-# Small world properties of giant component
-cat("Average path length:", igraph::mean_distance(flight.gc), "\n")
-cat("Diameter:", igraph::diameter(flight.gc, weights=NA), "\n")
-flight.gc.undirected <- igraph::as.undirected(flight.gc, mode="collapse")
-cat("Transitivity:", igraph::transitivity(flight.gc.undirected), "\n")
+As expected, Dallas, Washington Dulles are high up on the list. But interestingly, this time Tampa International much higher than Charlotte. I think the most likely reason is that the Charlotte Airport has flights that end in the network and follow to more destinations. Tampa is in Florida, and those flights are much more connected inside of Florida and the southeast region, which makes it more central in terms of closeness.
+
+### Betweenness Centrality
+
+Betweenness centrality counts the number of shortest paths between other pairs of nodes that pass through a given node. Airports with high betweenness are critical choke points. 
+
+```{r flight-betweenness-centrality}
+betw_cent <- igraph::betweenness(flight_undirected, normalized = TRUE)
+
+top_betweenness <- sort(betw_cent, decreasing = TRUE)[1:10]
+kable(data.frame(Airport = names(top_betweenness),
+                 Betweenness = round(as.numeric(top_betweenness), 6)),
+      col.names = c("Airport (ICAO)", "Betweenness"),
+      align = c("l", "r"),
+      caption = "Top 10 Airports by Betweenness Centrality")
 ```
 
-```{r}
-# Vertex and edge connectivity of giant component
-cat("Vertex connectivity:", igraph::vertex_connectivity(flight.gc), "\n")
-cat("Edge connectivity:", igraph::edge_connectivity(flight.gc), "\n")
+Major hubs are again on top meaning that they connect flights from one airport to the other. For example, when I fly to San Francisco, I always have to take a layover at Chicago O'Hare which is a major hub in airport network in the United States.
 
-# Articulation points (cut vertices)
-cut.verts <- igraph::articulation_points(flight.gc)
-cat("Number of articulation points:", length(cut.verts), "\n")
-cat("Fraction of vertices that are cut vertices:",
-    length(cut.verts)/igraph::vcount(flight.gc), "\n")
+### Eigenvector Centrality
+
+Eigenvector centrality extends the idea of degree centrality by weighting connections: being connected to well-connected airports matters more than being connected to poorly-connected ones. This captures the recursive notion that an airport is important if it is connected to other important airports.
+
+```{r flight-eigenvector-centrality}
+eig_cent <- eigen_centrality(flight_undirected)$vector
+
+top_eigen <- sort(eig_cent, decreasing = TRUE)[1:10]
+kable(data.frame(Airport = names(top_eigen),
+                 Eigenvector = round(as.numeric(top_eigen), 6)),
+      col.names = c("Airport (ICAO)", "Eigenvector Centrality"),
+      align = c("l", "r"),
+      caption = "Top 10 Airports by Eigenvector Centrality")
 ```
 
-```{r}
-# Dyad census for the directed flight network
-igraph::dyad_census(flight_network)
+### Hub and Authority Scores
+
+For directed networks,hub and authority scores provide a complementary perspective. An airport is a good **hub** if it sends flights to many good authorities, and a good **authority** if it receives flights from many good hubs. In aviation, hubs are airports that serve as major departure points and authorities are major arrival destinations.
+
+```{r flight-hub-authority}
+hub_scores <- hub_score(flight_network)$vector
+auth_scores <- authority_score(flight_network)$vector
+
+top_hubs <- sort(hub_scores, decreasing = TRUE)[1:10]
+top_auths <- sort(auth_scores, decreasing = TRUE)[1:10]
+
+kable(data.frame(Hub_Airport = names(top_hubs),
+                 Hub_Score = round(as.numeric(top_hubs), 4),
+                 Auth_Airport = names(top_auths),
+                 Auth_Score = round(as.numeric(top_auths), 4)),
+      col.names = c("Hub Airport", "Hub Score", "Authority Airport", "Authority Score"),
+      align = c("l", "r", "l", "r"),
+      caption = "Top 10 Airports by Hub and Authority Scores")
 ```
 
-```{r}
-# Reciprocity
-cat("Reciprocity (default):", igraph::reciprocity(flight_network, mode="default"), "\n")
-cat("Reciprocity (ratio):", igraph::reciprocity(flight_network, mode="ratio"), "\n")
+I was surprised that Detroit Wayne County Airport wasn't high up there in the hub scores because Detroit is a major Delta hub. One of the reasons that I could think of that is Detroit is not a well sought-after destination for travel compared to Chicago, Dallas, San Francisco, or New York. But it seems like Detroit is a good location for making connecting hub.
+
+### Comparing Centrality Measures
+
+Different centrality measures capture different aspects of importance. I wanted to see how correlated they are in this airport network.
+
+```{r flight-centrality-pairs, fig.width=10, fig.height=8}
+## Pairwise centrality comparison
+cent_df <- data.frame(
+  airport = V(flight_undirected)$name,
+  degree = igraph::degree(flight_undirected),
+  betweenness = igraph::betweenness(flight_undirected),
+  eigenvector = igraph::eigen_centrality(flight_undirected)$vector,
+  strength = igraph::strength(flight_undirected)
+)
+
+## Pairwise scatter plots
+pairs(cent_df[, c("degree", "betweenness", "eigenvector", "strength")],
+      col = adjustcolor("steelblue", alpha.f = 0.3),
+      pch = 19,
+      main = "Pairwise Centrality Comparisons",
+      labels = c("Degree", "Betweenness", "Eigenvector", "Strength"))
 ```
-
-### K-Core Decomposition
-
-```{r}
-# K-core decomposition
-cores <- igraph::coreness(flight_undirected)
-cat("Max coreness:", max(cores), "\n")
-cat("Coreness distribution:\n")
-table(cores)
-```
-
-```{r}
-# K-core target plot for top hubs
-A_sub <- as.matrix(igraph::as_adjacency_matrix(hubs_subgraph))
-net_sub <- as.network.matrix(A_sub)
-hubs_undirected <- igraph::as.undirected(hubs_subgraph, mode="collapse")
-hub_cores <- igraph::coreness(hubs_undirected)
-gplot.target(net_sub, hub_cores, circ.lab = FALSE,
-    circ.col="skyblue", usearrows = FALSE,
-    vertex.col=hub_cores, edge.col="darkgray",
-    main="K-Core Decomposition (Top Hubs)")
-```
-
-## Community Detection
-
-```{r}
-# Fast greedy community detection on the undirected network
-fc <- igraph::cluster_fast_greedy(flight_undirected)
-cat("Number of communities:", length(fc), "\n")
-cat("Community sizes:\n")
-igraph::sizes(fc)
-```
-
-```{r}
-# Modularity of the partition
-cat("Modularity:", igraph::modularity(fc), "\n")
-```
-
-```{r}
-# Community membership of top airports
-top10 <- order(igraph::degree(flight_undirected), decreasing=TRUE)[1:10]
-cat("Community membership of top 10 airports:\n")
-mem <- igraph::membership(fc)[top10]
-names(mem) <- V(flight_undirected)$name[top10]
-print(mem)
-```
-
-```{r}
-# Plot communities on the network
-plot(fc, flight_undirected, vertex.size=3, vertex.label=NA,
-     main="Flight Network Communities")
-```
-
-```{r}
-# Dendrogram
-library(ape)
-igraph::plot_dendrogram(fc, mode="phylo", cex=0.3)
-title("Flight Network Community Dendrogram")
-```
-
-## Spectral Analysis
-
-```{r}
-# Graph Laplacian analysis on the undirected network
-k.lap <- igraph::laplacian_matrix(flight_undirected)
-eig.anal <- eigen(k.lap, symmetric=TRUE)
-
-# Plot first 50 eigenvalues
-n_eig <- min(50, igraph::vcount(flight_undirected))
-plot(eig.anal$values[1:n_eig], col="blue",
-     ylab="Eigenvalues of Graph Laplacian",
-     xlab="Index",
-     main="Eigenvalue Spectrum (First 50)")
-```
-
-```{r}
-# Fiedler vector analysis
-n_v <- igraph::vcount(flight_undirected)
-f.vec <- eig.anal$vectors[, n_v - 1]
-
-# Color by community membership for comparison
-f.colors <- igraph::membership(fc)
-plot(f.vec, pch=16, col=f.colors,
-     xlab="Airport Index",
-     ylab="Fiedler Vector Entry",
-     main="Fiedler Vector (Spectral Bipartition)")
-abline(0, 0, lwd=2, col="lightgray")
-```
-
-## Assortativity
-
-```{r}
-# Degree assortativity
-cat("Degree assortativity:", igraph::assortativity_degree(flight_network), "\n")
-```
-
-## Network Visualization (ggraph)
-
-```{r}
-#| fig-width: 10
-#| fig-height: 10
-# Visualize top hub subnetwork using ggraph
-ggraph(hubs_subgraph, layout = "fr") +
-  geom_edge_link(alpha = 0.1, color = "gray50") +
-  geom_node_point(aes(size = igraph::degree(hubs_subgraph)),
-                  color = "steelblue", alpha = 0.7) +
-  scale_size_continuous(range = c(1, 8), name = "Degree") +
-  theme_void() +
-  labs(title = "Top Flight Hub Network (Fruchterman-Reingold Layout)")
-```
+Now, here all the centrality measures are positively correlated meaning that the major hubs tend to score high across all measures. However, the strength (weighted degree) shows a stronger correlation with eigenvector centrality than with betweenness, which makes sense because both strength and eigenvector centrality capture the idea of being connected to other important nodes. Betweenness can be high for airports that serve as critical bridges even if they don't have many direct connections.

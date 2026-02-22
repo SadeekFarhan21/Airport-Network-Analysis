@@ -1,0 +1,1542 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+]{report}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmainfont[]{CMU Bright}
+  \setmonofont[Scale=0.85]{Fragment Mono}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.33,0.33}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.33,0.33}{\underline{#1}}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{\textbf{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.44,0.26,0.76}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.14,0.16,0.18}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.14,0.16,0.18}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.44,0.26,0.76}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.84,0.23,0.29}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.42,0.45,0.49}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.36,0.77}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.89,0.38,0.04}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.01,0.18,0.38}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{1.00,0.33,0.33}{#1}}
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Computational Notebook},
+  pdfauthor={Farhan Sadeek},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Computational Notebook}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Ego Networks \& Global Flight Connectivity}
+\author{Farhan Sadeek}
+\date{2026-02-21}
+\begin{document}
+\maketitle
+
+\renewcommand*\contentsname{Contents}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+
+\chapter{Summary}\label{summary}
+
+I had to split this computational notebook into two parts, the first
+part is about my own ego network and the second is about the dataset I
+picked about airport and the interconnected networks between them. For
+the first part I analyzed my personal \textbf{ego network} using
+McCabe's framework with the three attributes density, transitivity,
+betweenness, and modularity to understand how I am connected with
+different social groups. Since I travel a lot and mostly by air the
+second is a large-scale \textbf{flight network} from global aviation
+data using a random sample of 500 airports, then I used descriptive
+analysis techniques from Kolaczyk and Csárdi's \emph{Statistical
+Analysis of Network Data with R} to understand some partterns in graph
+and networks.
+
+\section{Ego Network}\label{ego-network}
+
+I will start off with the definition of \textbf{ego network}. An ego
+network tries to gather more information about the local neighborhood
+around a single node. In the ego network of my life, I am the
+\textbf{ego}, its direct connections (the \textbf{alters}), and the
+connections between them. According to McCabe (2016), ego networks are a
+fundamental unit of social network analysis because they represent the
+immediate social environment of an individual.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Reading and building the ego network}
+\NormalTok{ego\_net\_link }\OtherTok{=} \StringTok{"https://notes.farhansadeek.com/dartmouth/math7/homework/Ego\_Network.csv"}
+\NormalTok{ego }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(ego\_net\_link)}
+\NormalTok{ego\_network }\OtherTok{\textless{}{-}} \FunctionTok{simplify}\NormalTok{(}\FunctionTok{graph\_from\_data\_frame}\NormalTok{(ego, }\AttributeTok{directed =} \ConstantTok{FALSE}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Visualizing the Ego
+Network}\label{visualizing-the-ego-network}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Ego node setup}
+\NormalTok{ego\_node }\OtherTok{\textless{}{-}} \StringTok{"FS"}
+
+\DocumentationTok{\#\# Color and size: ego vs alters (Claude Code)}
+\NormalTok{node\_colors }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{V}\NormalTok{(ego\_network)}\SpecialCharTok{$}\NormalTok{name }\SpecialCharTok{==}\NormalTok{ ego\_node, }\StringTok{"tomato"}\NormalTok{, }\StringTok{"steelblue"}\NormalTok{)}
+\NormalTok{node\_sizes }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{V}\NormalTok{(ego\_network)}\SpecialCharTok{$}\NormalTok{name }\SpecialCharTok{==}\NormalTok{ ego\_node, }\DecValTok{12}\NormalTok{, }\DecValTok{7}\NormalTok{)}
+
+\NormalTok{layout\_fr }\OtherTok{\textless{}{-}} \FunctionTok{layout\_with\_fr}\NormalTok{(ego\_network)}
+
+\DocumentationTok{\#\# Plot the ego network (Claude Code)}
+\FunctionTok{plot}\NormalTok{(ego\_network,}
+     \AttributeTok{layout =}\NormalTok{ layout\_fr,}
+     \AttributeTok{vertex.size =}\NormalTok{ node\_sizes,}
+     \AttributeTok{vertex.color =}\NormalTok{ node\_colors,}
+     \AttributeTok{vertex.frame.color =} \StringTok{"white"}\NormalTok{,}
+     \AttributeTok{vertex.label.family =} \StringTok{"sans"}\NormalTok{,}
+     \AttributeTok{vertex.label.color =} \StringTok{"black"}\NormalTok{,}
+     \AttributeTok{vertex.label.dist =} \FloatTok{1.5}\NormalTok{,}
+     \AttributeTok{vertex.label.cex =} \FloatTok{0.8}\NormalTok{,}
+     \AttributeTok{edge.arrow.size =} \FloatTok{0.4}\NormalTok{,}
+     \AttributeTok{edge.curved =} \FloatTok{0.2}\NormalTok{,}
+     \AttributeTok{edge.color =} \FunctionTok{adjustcolor}\NormalTok{(}\StringTok{"gray70"}\NormalTok{, }\AttributeTok{alpha.f =} \FloatTok{0.5}\NormalTok{),}
+     \AttributeTok{main =} \StringTok{"Personal Ego Network"}\NormalTok{)}
+
+\FunctionTok{legend}\NormalTok{(}\StringTok{"bottomright"}\NormalTok{, }\AttributeTok{legend =} \FunctionTok{c}\NormalTok{(}\StringTok{"Ego (FS)"}\NormalTok{, }\StringTok{"Alters"}\NormalTok{),}
+       \AttributeTok{pt.bg =} \FunctionTok{c}\NormalTok{(}\StringTok{"tomato"}\NormalTok{, }\StringTok{"steelblue"}\NormalTok{), }\AttributeTok{col =} \StringTok{"white"}\NormalTok{,}
+       \AttributeTok{pch =} \DecValTok{21}\NormalTok{, }\AttributeTok{pt.cex =} \FloatTok{1.5}\NormalTok{, }\AttributeTok{bty =} \StringTok{"n"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/ego-viz-1.pdf}}
+
+In my ego network, I am the node connecting many otherwise disconnected
+people. If we look at the visualization, then it's clear that I am
+connected to many alters and alters are not very well connected to
+themselves. Now, this is very common in ego networks, where the ego
+serves as a central hub bridging otherwise disconnected groups.
+
+\subsection{Full Ego Network Measures}\label{full-ego-network-measures}
+
+Now I will calculate the main structural metrics for the
+\textbf{complete ego network}, which includes all ties between the me
+and the edges that I am connected to, as well as any connections among
+the my friends themselves. This would allow us to understand communities
+and the imapact of me in the ego network formed because of me.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Computing full ego network measures}
+\NormalTok{full\_density }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{edge\_density}\NormalTok{(ego\_network)}
+\NormalTok{full\_transitivity\_global }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{transitivity}\NormalTok{(ego\_network, }\AttributeTok{type =} \StringTok{"global"}\NormalTok{)}
+\NormalTok{full\_transitivity\_ego }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{transitivity}\NormalTok{(ego\_network, }\AttributeTok{type =} \StringTok{"local"}\NormalTok{,}
+                          \AttributeTok{vids =} \FunctionTok{which}\NormalTok{(}\FunctionTok{V}\NormalTok{(ego\_network)}\SpecialCharTok{$}\NormalTok{name }\SpecialCharTok{==}\NormalTok{ ego\_node))}
+\NormalTok{full\_betweenness }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{betweenness}\NormalTok{(ego\_network)}
+\NormalTok{full\_fc }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{cluster\_fast\_greedy}\NormalTok{(ego\_network)}
+\NormalTok{full\_modularity }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{modularity}\NormalTok{(full\_fc)}
+
+\DocumentationTok{\#\# Summary table}
+\NormalTok{full\_measures }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Measure =} \FunctionTok{c}\NormalTok{(}\StringTok{"Nodes"}\NormalTok{, }\StringTok{"Edges"}\NormalTok{, }\StringTok{"Ego Degree (number of alters)"}\NormalTok{,}
+              \StringTok{"Density"}\NormalTok{, }\StringTok{"Global Transitivity"}\NormalTok{,}
+              \StringTok{"Local Transitivity of Ego"}\NormalTok{,}
+              \StringTok{"Betweenness Centrality of Ego"}\NormalTok{,}
+              \StringTok{"Normalized Ego Betweenness"}\NormalTok{,}
+              \StringTok{"Number of Communities"}\NormalTok{, }\StringTok{"Modularity"}\NormalTok{,}
+              \StringTok{"Ego\textquotesingle{}s Community"}\NormalTok{),}
+  \AttributeTok{Value =} \FunctionTok{c}\NormalTok{(}\FunctionTok{vcount}\NormalTok{(ego\_network),}
+            \FunctionTok{ecount}\NormalTok{(ego\_network),}
+\NormalTok{            igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(ego\_network, }\AttributeTok{v =}\NormalTok{ ego\_node),}
+            \FunctionTok{round}\NormalTok{(full\_density, }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(full\_transitivity\_global, }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(full\_transitivity\_ego, }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(full\_betweenness[ego\_node], }\DecValTok{2}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(full\_betweenness[ego\_node] }\SpecialCharTok{/} \FunctionTok{max}\NormalTok{(full\_betweenness), }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{length}\NormalTok{(full\_fc),}
+            \FunctionTok{round}\NormalTok{(full\_modularity, }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{membership}\NormalTok{(full\_fc)[ego\_node])}
+\NormalTok{)}
+
+\FunctionTok{kable}\NormalTok{(full\_measures, }\AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Measure"}\NormalTok{, }\StringTok{"Value"}\NormalTok{), }\AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\toprule\noalign{}
+Measure & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Nodes & 34.0000 \\
+Edges & 85.0000 \\
+Ego Degree (number of alters) & 30.0000 \\
+Density & 0.1515 \\
+Global Transitivity & 0.2786 \\
+Local Transitivity of Ego & 0.0920 \\
+Betweenness Centrality of Ego & 380.5300 \\
+Normalized Ego Betweenness & 1.0000 \\
+Number of Communities & 2.0000 \\
+Modularity & 0.2989 \\
+Ego's Community & 2.0000 \\
+\end{longtable}
+
+Since I am the ego I am the center of the network directly connected to
+almost all other nodes; the network as a whole is moderately dense given
+its size, but alters have relatively low connectivity amongst
+themselves, indicated by the comparatively low local transitivity for
+the ego. My betweenness centrality is maximized showing that I am the
+main bridge in the network, and most communication flows through me.
+Since the modularity is high it means that that there might have some
+clustering among the alters desite me being the center of the network.
+
+\subsection{Alter-Only Network without
+Ego}\label{alter-only-network-without-ego}
+
+Now I will have to remove the ego node to create the \textbf{alter-only
+induced subgraph} that has only the alter-alter edges. Now, this is
+important because it shows us how connected the alters are to each other
+\emph{without} the ego serving as a bridge.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Remove ego to get alter{-}only network}
+\NormalTok{alter\_network }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{delete\_vertices}\NormalTok{(ego\_network, }\FunctionTok{which}\NormalTok{(}\FunctionTok{V}\NormalTok{(ego\_network)}\SpecialCharTok{$}\NormalTok{name }\SpecialCharTok{==}\NormalTok{ ego\_node))}
+\DocumentationTok{\#\# Alter{-}only network measures}
+\NormalTok{alter\_density }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{edge\_density}\NormalTok{(alter\_network)}
+\NormalTok{alter\_transitivity\_global }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{transitivity}\NormalTok{(alter\_network, }\AttributeTok{type =} \StringTok{"global"}\NormalTok{)}
+\NormalTok{alter\_connected }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{is\_connected}\NormalTok{(alter\_network)}
+\NormalTok{alter\_n\_components }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{components}\NormalTok{(alter\_network)}\SpecialCharTok{$}\NormalTok{no}
+\NormalTok{alter\_fc }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{cluster\_louvain}\NormalTok{(alter\_network)}
+\NormalTok{alter\_modularity }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{modularity}\NormalTok{(alter\_fc)}
+
+\NormalTok{alter\_measures }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Measure =} \FunctionTok{c}\NormalTok{(}\StringTok{"Nodes"}\NormalTok{, }\StringTok{"Edges"}\NormalTok{, }\StringTok{"Density"}\NormalTok{, }\StringTok{"Global Transitivity"}\NormalTok{,}
+              \StringTok{"Is Connected"}\NormalTok{, }\StringTok{"Number of Components"}\NormalTok{,}
+              \StringTok{"Number of Communities"}\NormalTok{, }\StringTok{"Modularity"}\NormalTok{),}
+  \AttributeTok{Value =} \FunctionTok{c}\NormalTok{(}\FunctionTok{vcount}\NormalTok{(alter\_network),}
+            \FunctionTok{ecount}\NormalTok{(alter\_network),}
+            \FunctionTok{round}\NormalTok{(alter\_density, }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(alter\_transitivity\_global, }\DecValTok{4}\NormalTok{),}
+\NormalTok{            alter\_connected,}
+\NormalTok{            alter\_n\_components,}
+            \FunctionTok{length}\NormalTok{(alter\_fc),}
+            \FunctionTok{round}\NormalTok{(alter\_modularity, }\DecValTok{4}\NormalTok{))}
+\NormalTok{)}
+
+\FunctionTok{kable}\NormalTok{(alter\_measures, }\AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Measure"}\NormalTok{, }\StringTok{"Value"}\NormalTok{), }\AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\toprule\noalign{}
+Measure & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Nodes & 33.0000 \\
+Edges & 55.0000 \\
+Density & 0.1042 \\
+Global Transitivity & 0.3666 \\
+Is Connected & 0.0000 \\
+Number of Components & 9.0000 \\
+Number of Communities & 11.0000 \\
+Modularity & 0.3615 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Visualize alter{-}only network by community}
+\NormalTok{n\_communities }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(alter\_fc}\SpecialCharTok{$}\NormalTok{membership)}
+\NormalTok{pal }\OtherTok{\textless{}{-}} \ControlFlowTok{if}\NormalTok{ (n\_communities }\SpecialCharTok{\textless{}=} \DecValTok{12}\NormalTok{) }\FunctionTok{brewer.pal}\NormalTok{(}\FunctionTok{max}\NormalTok{(}\DecValTok{3}\NormalTok{, n\_communities), }\StringTok{"Set3"}\NormalTok{) }\ControlFlowTok{else} \FunctionTok{rainbow}\NormalTok{(n\_communities)}
+\NormalTok{alter\_node\_colors }\OtherTok{\textless{}{-}}\NormalTok{ pal[alter\_fc}\SpecialCharTok{$}\NormalTok{membership]}
+
+\FunctionTok{plot}\NormalTok{(alter\_network,}
+     \AttributeTok{vertex.size =} \DecValTok{8}\NormalTok{,}
+     \AttributeTok{vertex.color =}\NormalTok{ alter\_node\_colors,}
+     \AttributeTok{vertex.frame.color =} \StringTok{"white"}\NormalTok{,}
+     \AttributeTok{vertex.label.family =} \StringTok{"sans"}\NormalTok{,}
+     \AttributeTok{vertex.label.color =} \StringTok{"black"}\NormalTok{,}
+     \AttributeTok{vertex.label.dist =} \FloatTok{1.5}\NormalTok{,}
+     \AttributeTok{vertex.label.cex =} \FloatTok{0.8}\NormalTok{,}
+     \AttributeTok{edge.arrow.size =} \FloatTok{0.4}\NormalTok{,}
+     \AttributeTok{edge.curved =} \FloatTok{0.2}\NormalTok{,}
+     \AttributeTok{edge.color =} \FunctionTok{adjustcolor}\NormalTok{(}\StringTok{"gray80"}\NormalTok{, }\AttributeTok{alpha.f =} \FloatTok{0.4}\NormalTok{),}
+     \AttributeTok{layout =} \FunctionTok{layout\_with\_fr}\NormalTok{(alter\_network),}
+     \AttributeTok{main =} \StringTok{"Alter{-}Only Network (Colored by Community)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/alter-viz-1.pdf}}
+
+\subsection{Comparison Table}\label{comparison-table}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{results }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Measure =} \FunctionTok{c}\NormalTok{(}\StringTok{"Nodes"}\NormalTok{, }\StringTok{"Edges"}\NormalTok{, }\StringTok{"Density"}\NormalTok{, }\StringTok{"Global Transitivity"}\NormalTok{, }\StringTok{"Modularity"}\NormalTok{, }\StringTok{"Communities"}\NormalTok{),}
+  \AttributeTok{Full\_w\_ego =} \FunctionTok{c}\NormalTok{(}\FunctionTok{vcount}\NormalTok{(ego\_network), }\FunctionTok{ecount}\NormalTok{(ego\_network), full\_density, full\_transitivity\_global, full\_modularity, }\FunctionTok{length}\NormalTok{(full\_fc)),}
+  \AttributeTok{Alter\_only =} \FunctionTok{c}\NormalTok{(}\FunctionTok{vcount}\NormalTok{(alter\_network), }\FunctionTok{ecount}\NormalTok{(alter\_network), alter\_density, alter\_transitivity\_global, alter\_modularity, }\FunctionTok{length}\NormalTok{(alter\_fc))}
+\NormalTok{)}
+
+\FunctionTok{kable}\NormalTok{(results, }\AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Measure"}\NormalTok{, }\StringTok{"Full (w/ ego)"}\NormalTok{, }\StringTok{"Alter{-}only"}\NormalTok{), }\AttributeTok{digits =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrr@{}}
+\toprule\noalign{}
+Measure & Full (w/ ego) & Alter-only \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Nodes & 34.0000 & 33.0000 \\
+Edges & 85.0000 & 55.0000 \\
+Density & 0.1515 & 0.1042 \\
+Global Transitivity & 0.2786 & 0.3666 \\
+Modularity & 0.2989 & 0.3615 \\
+Communities & 2.0000 & 11.0000 \\
+\end{longtable}
+
+\subsection{McCabe's Network Typology}\label{mccabes-network-typology}
+
+According to the McCabe, there are three types of network structure -
+\textbf{Tight-knitters} have one densely connected, often exclusive
+group (high density, high transitivity, low modularity) -
+\textbf{Compartmentalizers} maintain distinct, separate groups that do
+not mingle (moderate density, high modularity, multiple clear
+communities). - \textbf{Samplers} maintain separate individual or
+small-group friendships across different areas of life (low density, low
+transitivity, many components or isolates in the alter-only network).
+
+I can classify my ego network by examining the structural signatures in
+the alter-only network, since that reveals the true pattern of
+connections among my contacts without me as the bridge.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Gemini 3.1 Pro}
+\NormalTok{typology\_metrics }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Metric =} \FunctionTok{c}\NormalTok{(}\StringTok{"Alter{-}only density"}\NormalTok{, }\StringTok{"Alter{-}only transitivity"}\NormalTok{,}
+             \StringTok{"Alter{-}only modularity"}\NormalTok{, }\StringTok{"Number of communities"}\NormalTok{,}
+             \StringTok{"Number of components"}\NormalTok{),}
+  \AttributeTok{Value =} \FunctionTok{c}\NormalTok{(}\FunctionTok{round}\NormalTok{(alter\_density, }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(alter\_transitivity\_global, }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(alter\_modularity, }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{length}\NormalTok{(alter\_fc),}
+\NormalTok{            alter\_n\_components)}
+\NormalTok{)}
+
+\FunctionTok{kable}\NormalTok{(typology\_metrics, }\AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Metric"}\NormalTok{, }\StringTok{"Value"}\NormalTok{), }\AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{),}
+      \AttributeTok{caption =} \StringTok{"Alter{-}Only Network Metrics for Typology Classification"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{Alter-Only Network Metrics for Typology
+Classification}\tabularnewline
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Metric & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Alter-only density & 0.1042 \\
+Alter-only transitivity & 0.3666 \\
+Alter-only modularity & 0.3615 \\
+Number of communities & 11.0000 \\
+Number of components & 9.0000 \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Classification logic based on McCabe (2016)}
+\ControlFlowTok{if}\NormalTok{ (alter\_density }\SpecialCharTok{\textgreater{}} \FloatTok{0.3} \SpecialCharTok{\&\&}\NormalTok{ alter\_modularity }\SpecialCharTok{\textless{}} \FloatTok{0.3}\NormalTok{) \{}
+\NormalTok{  ego\_type }\OtherTok{\textless{}{-}} \StringTok{"Tight{-}knitter"}
+\NormalTok{\} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{ (alter\_density }\SpecialCharTok{\textless{}} \FloatTok{0.10} \SpecialCharTok{\&\&}\NormalTok{ alter\_n\_components }\SpecialCharTok{\textgreater{}} \DecValTok{3}\NormalTok{) \{}
+\NormalTok{  ego\_type }\OtherTok{\textless{}{-}} \StringTok{"Sampler"}
+\NormalTok{\} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{  ego\_type }\OtherTok{\textless{}{-}} \StringTok{"Compartmentalizer"}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Based on these metrics, I classify as a \textbf{Compartmentalizer}. Here
+is the the pattern that I noticed there was
+
+\begin{itemize}
+\tightlist
+\item
+  A \textbf{Tight-knitter} would show alter-only density above 0.3 and
+  modularity below 0.3 --- one big, tightly connected group where
+  everyone knows everyone.
+\item
+  A \textbf{Sampler} would show very low alter-only density (below 0.15)
+  and many disconnected components (more than 3) --- scattered
+  friendships that don't form groups.
+\item
+  A \textbf{Compartmentalizer} falls in between: the alter-only network
+  has moderate density with clear community structure (high modularity)
+  --- distinct friend groups (e.g., academic, extracurricular, home)
+  that don't overlap much.
+\end{itemize}
+
+With an alter-only density of 0.1042, modularity of 0.3615, and 9
+components, my network fits the \textbf{Compartmentalizer} pattern. My
+contacts cluster into separate social circles --- groups from different
+parts of my life that are internally connected but rarely mingle with
+each other. When I am removed from the network, these groups become
+clearly visible as distinct communities.
+
+\subsection{Alter Role Classification}\label{alter-role-classification}
+
+Now \href{https://gemini.google.com}{Gemini} also classified each alter
+by their structural role within the network. An alter's degree, local
+clustering coefficient, and betweenness centrality together reveal
+whether they sit inside a tight group, serve as a bridge between groups,
+or are relatively isolated.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Classifying each alter by their structural role}
+\NormalTok{alter\_names }\OtherTok{\textless{}{-}} \FunctionTok{V}\NormalTok{(alter\_network)}\SpecialCharTok{$}\NormalTok{name}
+\NormalTok{alter\_deg }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(alter\_network)}
+\NormalTok{alter\_local\_trans }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{transitivity}\NormalTok{(alter\_network, }\AttributeTok{type =} \StringTok{"local"}\NormalTok{)}
+\NormalTok{alter\_betw }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{betweenness}\NormalTok{(alter\_network, }\AttributeTok{normalized =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{alter\_community }\OtherTok{\textless{}{-}} \FunctionTok{membership}\NormalTok{(alter\_fc)}
+
+\NormalTok{alter\_classification }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Alter =}\NormalTok{ alter\_names,}
+  \AttributeTok{Degree =}\NormalTok{ alter\_deg,}
+  \AttributeTok{Local\_Clustering =} \FunctionTok{round}\NormalTok{(alter\_local\_trans, }\DecValTok{4}\NormalTok{),}
+  \AttributeTok{Betweenness =} \FunctionTok{round}\NormalTok{(alter\_betw, }\DecValTok{4}\NormalTok{),}
+  \AttributeTok{Community =}\NormalTok{ alter\_community}
+\NormalTok{)}
+
+\DocumentationTok{\#\# Assigning roles based on degree, clustering, and betweenness}
+\NormalTok{alter\_classification}\SpecialCharTok{$}\NormalTok{Role }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(}
+\NormalTok{  alter\_deg }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\StringTok{"Isolate"}\NormalTok{,}
+  \FunctionTok{ifelse}\NormalTok{(alter\_betw }\SpecialCharTok{\textgreater{}} \FunctionTok{median}\NormalTok{(alter\_betw[alter\_betw }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{], }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\&}
+\NormalTok{         alter\_deg }\SpecialCharTok{\textgreater{}=} \FunctionTok{median}\NormalTok{(alter\_deg[alter\_deg }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{]),}
+         \StringTok{"Bridge"}\NormalTok{,}
+         \FunctionTok{ifelse}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(alter\_local\_trans) }\SpecialCharTok{\&}\NormalTok{ alter\_local\_trans }\SpecialCharTok{\textgreater{}} \FloatTok{0.5}\NormalTok{,}
+                \StringTok{"Tight{-}knit member"}\NormalTok{,}
+                \StringTok{"Peripheral"}\NormalTok{)))}
+
+\FunctionTok{kable}\NormalTok{(alter\_classification }\SpecialCharTok{|\textgreater{}} \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(Degree)),}
+      \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Alter"}\NormalTok{, }\StringTok{"Degree"}\NormalTok{, }\StringTok{"Local Clustering"}\NormalTok{, }\StringTok{"Betweenness"}\NormalTok{,}
+                     \StringTok{"Community"}\NormalTok{, }\StringTok{"Role"}\NormalTok{),}
+      \AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{, }\StringTok{"r"}\NormalTok{, }\StringTok{"r"}\NormalTok{, }\StringTok{"r"}\NormalTok{, }\StringTok{"l"}\NormalTok{),}
+      \AttributeTok{caption =} \StringTok{"Alter Classification by Network Role"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0541}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0811}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0946}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.2297}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1622}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1351}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.2432}}@{}}
+\caption{Alter Classification by Network Role}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Alter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Local Clustering
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Betweenness
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Community
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Role
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Alter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Degree
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Local Clustering
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Betweenness
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Community
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Role
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+JX & JX & 13 & 0.2692 & 0.1319 & 1 & Bridge \\
+MM & MM & 12 & 0.2424 & 0.2092 & 2 & Bridge \\
+KRM & KRM & 8 & 0.2500 & 0.0862 & 3 & Bridge \\
+AC & AC & 8 & 0.2500 & 0.0862 & 3 & Bridge \\
+AZ & AZ & 7 & 0.3810 & 0.0821 & 2 & Bridge \\
+NB & NB & 6 & 0.6000 & 0.0077 & 2 & Tight-knit member \\
+AT & AT & 6 & 0.6667 & 0.0042 & 2 & Tight-knit member \\
+EB & EB & 6 & 0.5333 & 0.0165 & 2 & Tight-knit member \\
+AP & AP & 5 & 0.4000 & 0.0411 & 1 & Peripheral \\
+KC & KC & 4 & 1.0000 & 0.0000 & 2 & Tight-knit member \\
+YG & YG & 4 & 0.8333 & 0.0004 & 2 & Tight-knit member \\
+AKC & AKC & 4 & 0.1667 & 0.0868 & 3 & Bridge \\
+EZ & EZ & 3 & 0.6667 & 0.0010 & 1 & Tight-knit member \\
+MX & MX & 3 & 0.3333 & 0.0549 & 3 & Peripheral \\
+AK & AK & 3 & 0.3333 & 0.0549 & 3 & Peripheral \\
+MS & MS & 2 & 1.0000 & 0.0000 & 1 & Tight-knit member \\
+SC & SC & 2 & 1.0000 & 0.0000 & 1 & Tight-knit member \\
+BW & BW & 2 & 1.0000 & 0.0000 & 1 & Tight-knit member \\
+TW & TW & 2 & 1.0000 & 0.0000 & 3 & Tight-knit member \\
+EW & EW & 2 & 1.0000 & 0.0000 & 3 & Tight-knit member \\
+RH & RH & 2 & 1.0000 & 0.0000 & 3 & Tight-knit member \\
+JZ & JZ & 2 & 1.0000 & 0.0000 & 3 & Tight-knit member \\
+SN & SN & 2 & 1.0000 & 0.0000 & 1 & Tight-knit member \\
+CZ & CZ & 1 & NaN & 0.0000 & 2 & Peripheral \\
+KMC & KMC & 1 & NaN & 0.0000 & 2 & Peripheral \\
+IC & IC & 0 & NaN & 0.0000 & 4 & Isolate \\
+HB & HB & 0 & NaN & 0.0000 & 5 & Isolate \\
+SK & SK & 0 & NaN & 0.0000 & 6 & Isolate \\
+CG & CG & 0 & NaN & 0.0000 & 7 & Isolate \\
+MA & MA & 0 & NaN & 0.0000 & 8 & Isolate \\
+JS & JS & 0 & NaN & 0.0000 & 9 & Isolate \\
+JC & JC & 0 & NaN & 0.0000 & 10 & Isolate \\
+MH & MH & 0 & NaN & 0.0000 & 11 & Isolate \\
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mar =} \FunctionTok{c}\NormalTok{(}\DecValTok{7}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{))  }\CommentTok{\# increase bottom margin}
+\NormalTok{role\_summary }\OtherTok{\textless{}{-}} \FunctionTok{table}\NormalTok{(alter\_classification}\SpecialCharTok{$}\NormalTok{Role)}
+\FunctionTok{barplot}\NormalTok{(}\FunctionTok{sort}\NormalTok{(role\_summary, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{),}
+        \AttributeTok{col =} \StringTok{"steelblue"}\NormalTok{,}
+        \AttributeTok{las =} \DecValTok{2}\NormalTok{,}
+        \AttributeTok{cex.names =} \FloatTok{0.8}\NormalTok{,}
+        \AttributeTok{ylab =} \StringTok{"Number of Alters"}\NormalTok{,}
+        \AttributeTok{main =} \StringTok{"Distribution of Alter Roles in Ego Network"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/alter-role-barplot-1.pdf}}
+
+The alter role distribution reinforces the Compartmentalizer
+classification. \textbf{Isolates} are alters who have no connections to
+anyone else in my network --- they know only me, which is characteristic
+of sampler-type relationships. \textbf{Bridges} are alters with high
+betweenness who connect different groups, much like I do as the ego.
+\textbf{Tight-knit members} are embedded within a dense cluster where
+their neighbors are also connected to each other. \textbf{Peripheral}
+alters have some connections but don't fit neatly into a tight group or
+bridging role.
+
+\subsection{Comparison and Discussion}\label{comparison-and-discussion}
+
+Now if we compare the network with and without me then there are a few
+interesting patterns. The density drops noticeably when I was removed,
+and that makes sense because I am connected to every alter by
+definition. Transitivity also changes, meaning that many of my alters
+know each other only through me. The modularity in the alter-only
+network is higher, indicating that without me bridging the groups, the
+alters cluster into more distinct communities such as friend groups from
+different parts of my life (college, work, hometown) that have little
+overlap. Now, this is \emph{consistent with McCabe's observation that
+ego removal often reveals the brokerage role the ego plays}. Now the
+betweenness centrality in the full network makes sure that I am a
+middle-man when connecting groups that would otherwise be disconnected.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\section{Flight Network Analysis}\label{flight-network-analysis}
+
+\subsection{Sampling from a Large
+Dataset}\label{sampling-from-a-large-dataset}
+
+Now, this is the second part of the computational notebook where I am
+taking a \textbf{random sample of 500 airports} from the global flight
+data. This gives us a more realistic and structurally interesting
+network with regional and smaller airports alongside major hubs. The
+network should show a variety of degree distribution and hub-and-spoke
+topology that is characteristic of real-world modern air transportation
+networks.
+
+I read a single month of global flight data (April 2020) and then drew
+my sample.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Loading April 2020 flight data}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"dataset/flightlist\_20200401\_20200430.csv"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Counting flights per airport}
+\NormalTok{origin\_counts }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{|\textgreater{}} \FunctionTok{count}\NormalTok{(origin, }\AttributeTok{name =} \StringTok{"flights"}\NormalTok{) }\SpecialCharTok{|\textgreater{}} \FunctionTok{rename}\NormalTok{(}\AttributeTok{airport =}\NormalTok{ origin)}
+\NormalTok{dest\_counts }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{|\textgreater{}} \FunctionTok{count}\NormalTok{(destination, }\AttributeTok{name =} \StringTok{"flights"}\NormalTok{) }\SpecialCharTok{|\textgreater{}} \FunctionTok{rename}\NormalTok{(}\AttributeTok{airport =}\NormalTok{ destination)}
+\NormalTok{airport\_activity }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(origin\_counts, dest\_counts) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{group\_by}\NormalTok{(airport) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{total\_flights =} \FunctionTok{sum}\NormalTok{(flights)) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{arrange}\NormalTok{(}\FunctionTok{desc}\NormalTok{(total\_flights))}
+
+\DocumentationTok{\#\# Remove airports with empty or NA codes}
+\NormalTok{airport\_activity }\OtherTok{\textless{}{-}}\NormalTok{ airport\_activity }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(airport }\SpecialCharTok{!=} \StringTok{""} \SpecialCharTok{\&} \SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(airport))}
+\end{Highlighting}
+\end{Shaded}
+
+I used a stratified random sampling approach to ensure the 500-airport
+sample includes a realistic mix with the very busiest hubs (so the
+network stays connected) alongside a random draw from the rest. This
+mirrors how real airline networks work a few major hubs connect to many
+smaller airports.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Randomly sample 500 airports}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+
+\NormalTok{all\_airports }\OtherTok{\textless{}{-}}\NormalTok{ airport\_activity}\SpecialCharTok{$}\NormalTok{airport}
+\NormalTok{sampled\_airports }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(all\_airports, }\FunctionTok{min}\NormalTok{(}\DecValTok{2000}\NormalTok{, }\FunctionTok{length}\NormalTok{(all\_airports)))}
+
+\DocumentationTok{\#\# Filter to flights between sampled airports}
+\NormalTok{sampled\_df }\OtherTok{\textless{}{-}}\NormalTok{ df }\SpecialCharTok{|\textgreater{}} \FunctionTok{filter}\NormalTok{(origin }\SpecialCharTok{\%in\%}\NormalTok{ sampled\_airports }\SpecialCharTok{\&}\NormalTok{ destination }\SpecialCharTok{\%in\%}\NormalTok{ sampled\_airports)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Number of sampled airports:"}\NormalTok{, }\FunctionTok{length}\NormalTok{(sampled\_airports), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Number of sampled airports: 2000 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Number of flights between sampled airports:"}\NormalTok{, }\FunctionTok{nrow}\NormalTok{(sampled\_df), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Number of flights between sampled airports: 33675 
+\end{verbatim}
+
+\subsection{Building the Network}\label{building-the-network}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Selecting relevant columns}
+\NormalTok{sampled\_df }\OtherTok{\textless{}{-}}\NormalTok{ sampled\_df }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{select}\NormalTok{(origin, destination, latitude\_1, longitude\_1, latitude\_2, longitude\_2) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{drop\_na}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Edge list: weighted by flight count per route}
+\NormalTok{edges }\OtherTok{\textless{}{-}}\NormalTok{ sampled\_df }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{group\_by}\NormalTok{(origin, destination) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{weight =} \FunctionTok{n}\NormalTok{(), }\AttributeTok{.groups =} \StringTok{"drop"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Vertex list: unique airports with coordinates}
+\NormalTok{origins }\OtherTok{\textless{}{-}}\NormalTok{ sampled\_df }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{select}\NormalTok{(}\AttributeTok{name =}\NormalTok{ origin, }\AttributeTok{lat =}\NormalTok{ latitude\_1, }\AttributeTok{long =}\NormalTok{ longitude\_1)}
+
+\NormalTok{destinations }\OtherTok{\textless{}{-}}\NormalTok{ sampled\_df }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{select}\NormalTok{(}\AttributeTok{name =}\NormalTok{ destination, }\AttributeTok{lat =}\NormalTok{ latitude\_2, }\AttributeTok{long =}\NormalTok{ longitude\_2)}
+
+\NormalTok{nodes }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(origins, destinations) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{distinct}\NormalTok{(name, }\AttributeTok{.keep\_all =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+  \FunctionTok{na.omit}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Building the directed graph}
+\NormalTok{flight\_network }\OtherTok{\textless{}{-}} \FunctionTok{graph\_from\_data\_frame}\NormalTok{(}\AttributeTok{d =}\NormalTok{ edges, }\AttributeTok{vertices =}\NormalTok{ nodes, }\AttributeTok{directed =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{flight\_network }\OtherTok{\textless{}{-}} \FunctionTok{simplify}\NormalTok{(flight\_network, }\AttributeTok{remove.multiple =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{remove.loops =} \ConstantTok{TRUE}\NormalTok{)}
+
+\DocumentationTok{\#\# Undirected version for symmetric analyses}
+\NormalTok{flight\_undirected }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{as.undirected}\NormalTok{(flight\_network, }\AttributeTok{mode =} \StringTok{"collapse"}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Directed network:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Directed network:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(}\FunctionTok{summary}\NormalTok{(flight\_network))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+IGRAPH 1a969c1 DNW- 1342 3713 -- 
++ attr: name (v/c), lat (v/n), long (v/n), weight (e/n)
+IGRAPH 1a969c1 DNW- 1342 3713 -- 
++ attr: name (v/c), lat (v/n), long (v/n), weight (e/n)
++ edges from 1a969c1 (vertex names):
+ [1] OTHH->VABB OTHH->KIAD OTHH->RJBB OTHH->LEMD OTHH->KJFK OTHH->VTBS
+ [7] OTHH->EBLG OTHH->KDFW OTHH->EGSS OTHH->LIRF OTHH->WSAP OTHH->GMMN
+[13] OTHH->LOWW OTHH->UKBB OTHH->LEBL OTHH->VOMM OTHH->ENKJ OTHH->EDDT
+[19] OTHH->RJAA OTHH->EINN OTHH->LKVO OTHH->FARA OTHH->UKKT VABB->OTHH
+[25] VABB->EBLG VABB->WSAP VABB->VOMM VABB->VTBD VABB->VAPO VABB->VEPI
+[31] KIAD->OTHH KIAD->LEMD KIAD->KJFK KIAD->KCLT KIAD->KCLE KIAD->KDFW
+[37] KIAD->KDAL KIAD->KMKE KIAD->KFCM KIAD->KTPA KIAD->KRVS KIAD->KLAS
+[43] KIAD->KDTW KIAD->03PS KIAD->KX04 KIAD->KFTW KIAD->KBUY KIAD->KORF
++ ... omitted several edges
+\end{verbatim}
+
+I selected only the columns needed for the analysis, constructed edge
+and vertex lists, and built both directed and undirected versions of the
+graph. I then simplified the graph so that there are no multi-edges or
+self-loops (the edge list was already aggregated by route, but
+simplification ensures a simple graph and removes any self-loops).
+
+\subsection{Network Visualization}\label{network-visualization}
+
+I visualized the network using a force-directed layout. In a network
+this large, raw plots can become unreadable, so I used vertex size
+scaled by degree and edge transparency to highlight the hub-and-spoke
+structure. I also applied the Fruchterman-Reingold layout algorithm
+(Fruchterman \& Reingold, 1991), which tends to place highly-connected
+nodes centrally.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Claude Code generated visualization with packcircles for better layoutated }
+\NormalTok{deg }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(flight\_undirected)}
+\NormalTok{btw }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{betweenness}\NormalTok{(flight\_undirected)}
+
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{airport =} \FunctionTok{V}\NormalTok{(flight\_undirected)}\SpecialCharTok{$}\NormalTok{name,}
+  \AttributeTok{centrality =}\NormalTok{ btw,}
+  \AttributeTok{degree =}\NormalTok{ deg}
+\NormalTok{)}
+
+\CommentTok{\# Aggressive cleaning}
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ df[}\FunctionTok{complete.cases}\NormalTok{(df), ]}
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ df[df}\SpecialCharTok{$}\NormalTok{centrality }\SpecialCharTok{\textgreater{}} \DecValTok{0}\NormalTok{, ]}
+\NormalTok{df }\OtherTok{\textless{}{-}}\NormalTok{ df[}\FunctionTok{is.finite}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{centrality), ]}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{centrality }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{centrality)}
+
+\NormalTok{color\_pal }\OtherTok{\textless{}{-}} \FunctionTok{colorRampPalette}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\StringTok{"lightblue"}\NormalTok{, }\StringTok{"steelblue"}\NormalTok{, }\StringTok{"darkblue"}\NormalTok{, }\StringTok{"orange"}\NormalTok{, }\StringTok{"red"}\NormalTok{))(}\DecValTok{5}\NormalTok{)}
+\DocumentationTok{\#\# Use unique breaks so cut() never gets duplicate break points (e.g. when degree has little variation)}
+\NormalTok{deg\_breaks }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(}\FunctionTok{quantile}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{degree, }\AttributeTok{probs =} \FunctionTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\AttributeTok{length.out =} \DecValTok{6}\NormalTok{), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+\ControlFlowTok{if}\NormalTok{ (}\FunctionTok{length}\NormalTok{(deg\_breaks) }\SpecialCharTok{\textgreater{}=} \DecValTok{2}\NormalTok{) \{}
+\NormalTok{  df}\SpecialCharTok{$}\NormalTok{deg\_bin }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(}\FunctionTok{cut}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{degree, }\AttributeTok{breaks =}\NormalTok{ deg\_breaks, }\AttributeTok{include.lowest =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{labels =} \ConstantTok{FALSE}\NormalTok{))}
+\NormalTok{  df}\SpecialCharTok{$}\NormalTok{deg\_bin }\OtherTok{\textless{}{-}} \FunctionTok{pmin}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{deg\_bin, }\DecValTok{5}\NormalTok{)  }\CommentTok{\# cap at 5 for color\_pal}
+\NormalTok{\} }\ControlFlowTok{else}\NormalTok{ \{}
+\NormalTok{  df}\SpecialCharTok{$}\NormalTok{deg\_bin }\OtherTok{\textless{}{-}} \DecValTok{1}\NormalTok{L}
+\NormalTok{\}}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{color   }\OtherTok{\textless{}{-}}\NormalTok{ color\_pal[df}\SpecialCharTok{$}\NormalTok{deg\_bin]}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{label   }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{centrality }\SpecialCharTok{\textgreater{}=} \FunctionTok{quantile}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{centrality, }\FloatTok{0.90}\NormalTok{), df}\SpecialCharTok{$}\NormalTok{airport, }\StringTok{""}\NormalTok{)}
+
+\CommentTok{\# Pack and check for NAs before plotting}
+\NormalTok{packing }\OtherTok{\textless{}{-}} \FunctionTok{circleProgressiveLayout}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{centrality, }\AttributeTok{sizetype =} \StringTok{"area"}\NormalTok{)}
+
+\CommentTok{\# Drop any rows where packing produced NAs}
+\NormalTok{bad }\OtherTok{\textless{}{-}} \FunctionTok{apply}\NormalTok{(packing, }\DecValTok{1}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(r) }\FunctionTok{any}\NormalTok{(}\FunctionTok{is.na}\NormalTok{(r)))}
+\NormalTok{df     }\OtherTok{\textless{}{-}}\NormalTok{ df[}\SpecialCharTok{!}\NormalTok{bad, ]}
+\NormalTok{packing }\OtherTok{\textless{}{-}}\NormalTok{ packing[}\SpecialCharTok{!}\NormalTok{bad, ]}
+
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(df, packing)}
+\NormalTok{dat.gg }\OtherTok{\textless{}{-}} \FunctionTok{circleLayoutVertices}\NormalTok{(packing, }\AttributeTok{npoints =} \DecValTok{100}\NormalTok{)}
+\NormalTok{dat.gg}\SpecialCharTok{$}\NormalTok{deg\_bin }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{deg\_bin, }\AttributeTok{each =} \DecValTok{101}\NormalTok{)}
+
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_polygon}\NormalTok{(}\AttributeTok{data =}\NormalTok{ dat.gg,}
+               \FunctionTok{aes}\NormalTok{(x, y, }\AttributeTok{group =}\NormalTok{ id, }\AttributeTok{fill =} \FunctionTok{factor}\NormalTok{(deg\_bin)),}
+               \AttributeTok{colour =} \StringTok{"white"}\NormalTok{, }\AttributeTok{linewidth =} \FloatTok{0.3}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.92}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_fill\_manual}\NormalTok{(}
+    \AttributeTok{values =} \FunctionTok{setNames}\NormalTok{(color\_pal, }\FunctionTok{as.character}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{)),}
+    \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Very Low"}\NormalTok{, }\StringTok{"Low"}\NormalTok{, }\StringTok{"Medium"}\NormalTok{, }\StringTok{"High"}\NormalTok{, }\StringTok{"Very High"}\NormalTok{),}
+    \AttributeTok{name =} \StringTok{"Degree"}
+\NormalTok{  ) }\SpecialCharTok{+}
+\FunctionTok{geom\_text}\NormalTok{(}\AttributeTok{data =}\NormalTok{ df[df}\SpecialCharTok{$}\NormalTok{label }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, ],}
+            \FunctionTok{aes}\NormalTok{(x, y, }\AttributeTok{label =}\NormalTok{ label, }\AttributeTok{size =}\NormalTok{ centrality),}
+            \AttributeTok{color =} \StringTok{"black"}\NormalTok{,}\AttributeTok{show.legend =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{scale\_size\_continuous}\NormalTok{(}\AttributeTok{range =} \FunctionTok{c}\NormalTok{(}\FloatTok{1.5}\NormalTok{, }\FloatTok{3.5}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{coord\_equal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme\_void}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}
+    \AttributeTok{legend.position =} \StringTok{"right"}\NormalTok{,}
+    \AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{16}\NormalTok{, }\AttributeTok{face =} \StringTok{"bold"}\NormalTok{),}
+    \AttributeTok{plot.background =} \FunctionTok{element\_rect}\NormalTok{(}\AttributeTok{fill =} \StringTok{"white"}\NormalTok{, }\AttributeTok{color =} \ConstantTok{NA}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Flight Network — Airport Centrality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/flight-network-viz-1.pdf}}
+
+From this visualization I can see the hub-and-spoke structure that
+airlines follow which is a small number of airports (colored in
+red/orange) sit at the center of the layout with many connections, while
+the majority of airports cluster around the periphery with only a few
+routes each.
+
+\subsection{Basic Graph Properties}\label{basic-graph-properties}
+
+Below are some basic network property checks designed with the help of
+\href{https://code.claude.com}{Claude Code}. These provide an overview
+of the network's structure.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wc }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{clusters}\NormalTok{(flight\_network, }\AttributeTok{mode =} \StringTok{"weak"}\NormalTok{)}
+
+\NormalTok{basic\_props }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Property =} \FunctionTok{c}\NormalTok{(}\StringTok{"Number of airports (vertices)"}\NormalTok{,}
+               \StringTok{"Number of flight routes (edges)"}\NormalTok{,}
+               \StringTok{"Is the graph simple?"}\NormalTok{,}
+               \StringTok{"Is weakly connected?"}\NormalTok{,}
+               \StringTok{"Is strongly connected?"}\NormalTok{,}
+               \StringTok{"Number of weakly connected components"}\NormalTok{,}
+               \StringTok{"Size of largest component"}\NormalTok{,}
+               \StringTok{"Diameter (unweighted)"}\NormalTok{,}
+               \StringTok{"Average path length"}\NormalTok{,}
+               \StringTok{"Edge density"}\NormalTok{),}
+  \AttributeTok{Value =} \FunctionTok{c}\NormalTok{(}\FunctionTok{vcount}\NormalTok{(flight\_network),}
+            \FunctionTok{ecount}\NormalTok{(flight\_network),}
+            \FunctionTok{is\_simple}\NormalTok{(flight\_network),}
+            \FunctionTok{is\_connected}\NormalTok{(flight\_network, }\AttributeTok{mode =} \StringTok{"weak"}\NormalTok{),}
+            \FunctionTok{is\_connected}\NormalTok{(flight\_network, }\AttributeTok{mode =} \StringTok{"strong"}\NormalTok{),}
+\NormalTok{            wc}\SpecialCharTok{$}\NormalTok{no,}
+            \FunctionTok{max}\NormalTok{(wc}\SpecialCharTok{$}\NormalTok{csize),}
+            \FunctionTok{diameter}\NormalTok{(flight\_network, }\AttributeTok{weights =} \ConstantTok{NA}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(}\FunctionTok{mean\_distance}\NormalTok{(flight\_network), }\DecValTok{4}\NormalTok{),}
+            \FunctionTok{round}\NormalTok{(}\FunctionTok{edge\_density}\NormalTok{(flight\_network), }\DecValTok{6}\NormalTok{))}
+\NormalTok{)}
+
+\FunctionTok{kable}\NormalTok{(basic\_props, }\AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Property"}\NormalTok{, }\StringTok{"Value"}\NormalTok{), }\AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\toprule\noalign{}
+Property & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Number of airports (vertices) & 1.3420e+03 \\
+Number of flight routes (edges) & 3.7130e+03 \\
+Is the graph simple? & 1.0000e+00 \\
+Is weakly connected? & 0.0000e+00 \\
+Is strongly connected? & 0.0000e+00 \\
+Number of weakly connected components & 1.1700e+02 \\
+Size of largest component & 1.1370e+03 \\
+Diameter (unweighted) & 1.6000e+01 \\
+Average path length & 7.7486e+00 \\
+Edge density & 2.0630e-03 \\
+\end{longtable}
+
+\section{Vertex and Edge
+Characteristics}\label{vertex-and-edge-characteristics}
+
+\subsection{Degree Distribution}\label{degree-distribution}
+
+Now we will take a look at the degree distribution, which is a very
+important property of the network. The degree distribution tells us how
+many connections each airport has. In airline networks, we often see a
+highly skewed degree distribution where a few major hubs have many
+connections, while most airports have only a few routes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+
+\DocumentationTok{\#\# Histogram of degree}
+\FunctionTok{hist}\NormalTok{(igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(flight\_undirected),}
+     \AttributeTok{col =} \StringTok{"steelblue"}\NormalTok{,}
+     \AttributeTok{breaks =} \DecValTok{50}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Vertex Degree"}\NormalTok{,}
+     \AttributeTok{ylab =} \StringTok{"Frequency"}\NormalTok{,}
+     \AttributeTok{main =} \StringTok{"Degree Distribution"}\NormalTok{)}
+
+\DocumentationTok{\#\# Log{-}log degree distribution to check for power{-}law behavior}
+\NormalTok{dd.flights }\OtherTok{\textless{}{-}} \FunctionTok{degree\_distribution}\NormalTok{(flight\_undirected)}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{0}\SpecialCharTok{:}\NormalTok{(}\FunctionTok{length}\NormalTok{(dd.flights) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+\NormalTok{ind }\OtherTok{\textless{}{-}}\NormalTok{ (dd.flights }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(d[ind], dd.flights[ind],}
+     \AttributeTok{log =} \StringTok{"xy"}\NormalTok{,}
+     \AttributeTok{col =} \StringTok{"steelblue"}\NormalTok{,}
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Log{-}Degree"}\NormalTok{,}
+     \AttributeTok{ylab =} \StringTok{"Log{-}Intensity"}\NormalTok{,}
+     \AttributeTok{main =} \StringTok{"Log{-}Log Degree Distribution"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/flight-degree-dist-1.pdf}}
+
+The degree distribution is very skewed, because of the airports don't
+have very many connections, but the hubs have a lot of connections. The
+log-long plot shows a linear relationship in the tail, which is an
+indication of a power-law or scale-free degree distribution. Now we can
+derive becuase most airlines want to reduce cost and having only a few
+hubs make it easier for repair and maintenace.
+
+\subsection{Vertex Strength}\label{vertex-strength}
+
+While degree counts the number of routes, vertex strength accounts for
+edge weights which could be represented the number of flights on each
+route. This could help us find airpots where are people flying a lot
+more frequently.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{))}
+\FunctionTok{hist}\NormalTok{(igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(flight\_undirected), }\AttributeTok{col =} \StringTok{"lightblue"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Vertex Degree"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Frequency"}\NormalTok{, }\AttributeTok{main =} \StringTok{"Degree"}\NormalTok{,}
+     \AttributeTok{breaks =} \DecValTok{40}\NormalTok{)}
+
+\FunctionTok{hist}\NormalTok{(}\FunctionTok{strength}\NormalTok{(flight\_undirected), }\AttributeTok{col =} \StringTok{"steelblue"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Vertex Strength (Total Flights)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Frequency"}\NormalTok{,}
+     \AttributeTok{main =} \StringTok{"Strength"}\NormalTok{, }\AttributeTok{breaks =} \DecValTok{40}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/flight-strength-1.pdf}}
+
+Both distributions are right-skewed, but the strength distribution has
+an even longer tail. Now this means that not only that the major hubs
+have more destinations those flights are much more frequent than the
+routes themselves.
+
+\subsection{Average Neighbor Degree}\label{average-neighbor-degree}
+
+Let's take a look at how each airport's number of connections relates to
+the average number of connections its neighboring airports have. This
+helps us see if airports with lots of connections mostly link to other
+well-connected airports, or if they're more likely to connect to
+smaller, less connected ones.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a.nn.deg.flight }\OtherTok{\textless{}{-}} \FunctionTok{knn}\NormalTok{(flight\_undirected, }\FunctionTok{V}\NormalTok{(flight\_undirected))}\SpecialCharTok{$}\NormalTok{knn}
+\FunctionTok{plot}\NormalTok{(igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(flight\_undirected), a.nn.deg.flight,}
+     \AttributeTok{log =} \StringTok{"xy"}\NormalTok{,}
+     \AttributeTok{col =} \FunctionTok{adjustcolor}\NormalTok{(}\StringTok{"steelblue"}\NormalTok{, }\AttributeTok{alpha.f =} \FloatTok{0.5}\NormalTok{),}
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Log Vertex Degree"}\NormalTok{,}
+     \AttributeTok{ylab =} \StringTok{"Log Average Neighbor Degree"}\NormalTok{,}
+     \AttributeTok{main =} \StringTok{"Degree vs. Average Neighbor Degree"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/flight-avg-neighbor-deg-1.pdf}}
+
+The plot shows a negative trend: higher-degree airports (the major hubs)
+tend to be connected to neighbors with lower average degree. This is
+textbook disassortative mixing, which is characteristic of hub-and-spoke
+transportation networks. The big hubs connect to many small regional
+airports, which in turn have the hub as their most prominent neighbor.
+This pattern contrasts with social networks, which are typically
+assortative (popular people befriend other popular people).
+
+\section{Network Cohesion}\label{network-cohesion}
+
+Now, this an interesting property to look at how the vertex and edges
+are connected and the size of the largest component to understand how
+the network is built.
+
+\subsection{Connectivity and
+Components}\label{connectivity-and-components}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Vertex and edge connectivity}
+\NormalTok{v\_conn }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{vertex\_connectivity}\NormalTok{(flight\_undirected)}
+\NormalTok{e\_conn }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{edge\_connectivity}\NormalTok{(flight\_undirected)}
+
+\NormalTok{comp }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{clusters}\NormalTok{(flight\_undirected)  }\CommentTok{\# use clusters() to avoid the conflict}
+
+\NormalTok{cohesion\_props }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Property =} \FunctionTok{c}\NormalTok{(}\StringTok{"Vertex connectivity"}\NormalTok{,}
+               \StringTok{"Edge connectivity"}\NormalTok{,}
+               \StringTok{"Number of components"}\NormalTok{,}
+               \StringTok{"Size of largest component"}\NormalTok{,}
+               \StringTok{"Number of isolates (degree 0)"}\NormalTok{),}
+  \AttributeTok{Value =} \FunctionTok{c}\NormalTok{(v\_conn,}
+\NormalTok{            e\_conn,}
+\NormalTok{            comp}\SpecialCharTok{$}\NormalTok{no,}
+            \FunctionTok{max}\NormalTok{(comp}\SpecialCharTok{$}\NormalTok{csize),}
+            \FunctionTok{sum}\NormalTok{(igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(flight\_undirected) }\SpecialCharTok{==} \DecValTok{0}\NormalTok{))}
+\NormalTok{)}
+
+\FunctionTok{kable}\NormalTok{(cohesion\_props, }\AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Property"}\NormalTok{, }\StringTok{"Value"}\NormalTok{), }\AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\toprule\noalign{}
+Property & Value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Vertex connectivity & 0 \\
+Edge connectivity & 0 \\
+Number of components & 117 \\
+Size of largest component & 1137 \\
+Number of isolates (degree 0) & 78 \\
+\end{longtable}
+
+Now, since vertex connectivity and edge connectivity is 0, this means
+that this airport network is connected to every single other airport in
+some path. In a hub-and-spoke network, these values are often low
+because removing just a few critical hubs would make collapse the
+network.
+
+\subsection{Transitivity}\label{transitivity}
+
+Transitivity, also called the clustering coefficient, measures the
+tendency for triangles to form in the network. In an airport context, a
+triangle means that if airport A has direct flights to both B and C,
+then B and C also have a direct flight between them.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Global transitivity}
+\NormalTok{global\_trans }\OtherTok{\textless{}{-}} \FunctionTok{transitivity}\NormalTok{(flight\_undirected, }\AttributeTok{type =} \StringTok{"global"}\NormalTok{)}
+
+\DocumentationTok{\#\# Local transitivity}
+\NormalTok{local\_trans }\OtherTok{\textless{}{-}} \FunctionTok{transitivity}\NormalTok{(flight\_undirected, }\AttributeTok{type =} \StringTok{"local"}\NormalTok{)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Global transitivity (clustering coefficient):"}\NormalTok{, }\FunctionTok{round}\NormalTok{(global\_trans, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Global transitivity (clustering coefficient): 0.1402 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Average local transitivity:"}\NormalTok{, }\FunctionTok{round}\NormalTok{(}\FunctionTok{mean}\NormalTok{(local\_trans, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{), }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Average local transitivity: 0.3549 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Local clustering vs degree}
+\FunctionTok{plot}\NormalTok{(igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(flight\_undirected), local\_trans,}
+     \AttributeTok{col =} \FunctionTok{adjustcolor}\NormalTok{(}\StringTok{"steelblue"}\NormalTok{, }\AttributeTok{alpha.f =} \FloatTok{0.4}\NormalTok{),}
+     \AttributeTok{pch =} \DecValTok{19}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"Vertex Degree"}\NormalTok{,}
+     \AttributeTok{ylab =} \StringTok{"Local Clustering Coefficient"}\NormalTok{,}
+     \AttributeTok{main =} \StringTok{"Clustering Coefficient vs. Degree"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/flight-clustering-vs-degree-1.pdf}}
+
+\section{Centrality Analysis}\label{centrality-analysis}
+
+Centrality measures identify the most important or influential nodes in
+a network. I computed four classic centrality measures, each capturing a
+different notion of importance in th network.
+
+\subsection{Degree Centrality}\label{degree-centrality}
+
+Degree centrality tells us the number of direct connections a node has.
+In an airport network, this tells us which airports serve the most
+direct routes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Degree centrality}
+\NormalTok{deg\_cent }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(flight\_undirected)}
+
+\DocumentationTok{\#\# Top 10 by degree}
+\NormalTok{top\_degree }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(deg\_cent, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{]}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Airport =} \FunctionTok{names}\NormalTok{(top\_degree),}
+                 \AttributeTok{Degree =} \FunctionTok{as.integer}\NormalTok{(top\_degree)),}
+      \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Airport (ICAO)"}\NormalTok{, }\StringTok{"Degree"}\NormalTok{),}
+      \AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{),}
+      \AttributeTok{caption =} \StringTok{"Top 15 Airports by Degree Centrality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{Top 15 Airports by Degree Centrality}\tabularnewline
+\toprule\noalign{}
+Airport (ICAO) & Degree \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Airport (ICAO) & Degree \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+KDFW & 121 \\
+KCLT & 100 \\
+KIAD & 79 \\
+KDAL & 74 \\
+KFTW & 56 \\
+KDTW & 54 \\
+KTPA & 51 \\
+KLAS & 49 \\
+KTUL & 48 \\
+KFCM & 44 \\
+\end{longtable}
+
+In the airport network, we chose Dallas-Forth Worth, Charlotte,
+Washington Dulles has some of the highest degree centrality meaning that
+they are the major hubs in the network.
+
+\subsection{Closeness Centrality}\label{closeness-centrality}
+
+Closeness centrality measures how close a node is to all other nodes,
+computed as the inverse of the average shortest path distance. Airports
+with high closeness are well-positioned to reach the entire network
+quickly --- they are geographically or topologically central.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Closeness centrality on largest component}
+\NormalTok{lcc }\OtherTok{\textless{}{-}} \FunctionTok{induced\_subgraph}\NormalTok{(flight\_undirected,}
+                        \FunctionTok{which}\NormalTok{(comp}\SpecialCharTok{$}\NormalTok{membership }\SpecialCharTok{==} \FunctionTok{which.max}\NormalTok{(comp}\SpecialCharTok{$}\NormalTok{csize)))}
+\NormalTok{close\_cent }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{closeness}\NormalTok{(lcc)}
+
+\NormalTok{top\_closeness }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(close\_cent, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{]}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Airport =} \FunctionTok{names}\NormalTok{(top\_closeness),}
+                 \AttributeTok{Closeness =} \FunctionTok{round}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(top\_closeness), }\DecValTok{6}\NormalTok{)),}
+      \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Airport (ICAO)"}\NormalTok{, }\StringTok{"Closeness"}\NormalTok{),}
+      \AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{),}
+      \AttributeTok{caption =} \StringTok{"Top 15 Airports by Closeness Centrality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{Top 15 Airports by Closeness Centrality}\tabularnewline
+\toprule\noalign{}
+Airport (ICAO) & Closeness \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Airport (ICAO) & Closeness \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+KDFW & 0.000213 \\
+KIAD & 0.000206 \\
+KDAL & 0.000202 \\
+KTPA & 0.000195 \\
+KHWO & 0.000195 \\
+EGSS & 0.000195 \\
+KCLT & 0.000195 \\
+KFTW & 0.000195 \\
+6FD7 & 0.000195 \\
+KRVS & 0.000194 \\
+\end{longtable}
+
+As expected, Dallas, Washington Dulles are high up on the list. But
+interestingly, this time Tampa International much higher than Charlotte.
+I think the most likely reason is that the Charlotte Airport has flights
+that end in the network and follow to more destinations. Tampa is in
+Florida, and those flights are much more connected inside of Florida and
+the southeast region, which makes it more central in terms of closeness.
+
+\subsection{Betweenness Centrality}\label{betweenness-centrality}
+
+Betweenness centrality counts the number of shortest paths between other
+pairs of nodes that pass through a given node. Airports with high
+betweenness are critical choke points.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{betw\_cent }\OtherTok{\textless{}{-}}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{betweenness}\NormalTok{(flight\_undirected, }\AttributeTok{normalized =} \ConstantTok{TRUE}\NormalTok{)}
+
+\NormalTok{top\_betweenness }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(betw\_cent, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{]}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Airport =} \FunctionTok{names}\NormalTok{(top\_betweenness),}
+                 \AttributeTok{Betweenness =} \FunctionTok{round}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(top\_betweenness), }\DecValTok{6}\NormalTok{)),}
+      \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Airport (ICAO)"}\NormalTok{, }\StringTok{"Betweenness"}\NormalTok{),}
+      \AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{),}
+      \AttributeTok{caption =} \StringTok{"Top 10 Airports by Betweenness Centrality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{Top 10 Airports by Betweenness Centrality}\tabularnewline
+\toprule\noalign{}
+Airport (ICAO) & Betweenness \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Airport (ICAO) & Betweenness \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+KDFW & 0.135991 \\
+KIAD & 0.095267 \\
+KDAL & 0.078444 \\
+KFTW & 0.062871 \\
+KCLT & 0.059499 \\
+EGSS & 0.057008 \\
+KFCM & 0.048783 \\
+KJFK & 0.047787 \\
+KTUL & 0.044639 \\
+KTPA & 0.042151 \\
+\end{longtable}
+
+Major hubs are again on top meaning that they connect flights from one
+airport to the other. For example, when I fly to San Francisco, I always
+have to take a layover at Chicago O'Hare which is a major hub in airport
+network in the United States.
+
+\subsection{Eigenvector Centrality}\label{eigenvector-centrality}
+
+Eigenvector centrality extends the idea of degree centrality by
+weighting connections: being connected to well-connected airports
+matters more than being connected to poorly-connected ones. This
+captures the recursive notion that an airport is important if it is
+connected to other important airports.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{eig\_cent }\OtherTok{\textless{}{-}} \FunctionTok{eigen\_centrality}\NormalTok{(flight\_undirected)}\SpecialCharTok{$}\NormalTok{vector}
+
+\NormalTok{top\_eigen }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(eig\_cent, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{]}
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Airport =} \FunctionTok{names}\NormalTok{(top\_eigen),}
+                 \AttributeTok{Eigenvector =} \FunctionTok{round}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(top\_eigen), }\DecValTok{6}\NormalTok{)),}
+      \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Airport (ICAO)"}\NormalTok{, }\StringTok{"Eigenvector Centrality"}\NormalTok{),}
+      \AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{),}
+      \AttributeTok{caption =} \StringTok{"Top 10 Airports by Eigenvector Centrality"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lr@{}}
+\caption{Top 10 Airports by Eigenvector Centrality}\tabularnewline
+\toprule\noalign{}
+Airport (ICAO) & Eigenvector Centrality \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Airport (ICAO) & Eigenvector Centrality \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+KDFW & 1.000000 \\
+KDTW & 0.728641 \\
+KCLT & 0.697133 \\
+KLAS & 0.681991 \\
+KIAD & 0.531894 \\
+KORF & 0.382264 \\
+KTUL & 0.364943 \\
+KCLE & 0.293416 \\
+KMKE & 0.291355 \\
+KDAL & 0.285431 \\
+\end{longtable}
+
+\subsection{Hub and Authority Scores}\label{hub-and-authority-scores}
+
+For directed networks,hub and authority scores provide a complementary
+perspective. An airport is a good \textbf{hub} if it sends flights to
+many good authorities, and a good \textbf{authority} if it receives
+flights from many good hubs. In aviation, hubs are airports that serve
+as major departure points and authorities are major arrival
+destinations.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{hub\_scores }\OtherTok{\textless{}{-}} \FunctionTok{hub\_score}\NormalTok{(flight\_network)}\SpecialCharTok{$}\NormalTok{vector}
+\NormalTok{auth\_scores }\OtherTok{\textless{}{-}} \FunctionTok{authority\_score}\NormalTok{(flight\_network)}\SpecialCharTok{$}\NormalTok{vector}
+
+\NormalTok{top\_hubs }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(hub\_scores, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{]}
+\NormalTok{top\_auths }\OtherTok{\textless{}{-}} \FunctionTok{sort}\NormalTok{(auth\_scores, }\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{)[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{]}
+
+\FunctionTok{kable}\NormalTok{(}\FunctionTok{data.frame}\NormalTok{(}\AttributeTok{Hub\_Airport =} \FunctionTok{names}\NormalTok{(top\_hubs),}
+                 \AttributeTok{Hub\_Score =} \FunctionTok{round}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(top\_hubs), }\DecValTok{4}\NormalTok{),}
+                 \AttributeTok{Auth\_Airport =} \FunctionTok{names}\NormalTok{(top\_auths),}
+                 \AttributeTok{Auth\_Score =} \FunctionTok{round}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(top\_auths), }\DecValTok{4}\NormalTok{)),}
+      \AttributeTok{col.names =} \FunctionTok{c}\NormalTok{(}\StringTok{"Hub Airport"}\NormalTok{, }\StringTok{"Hub Score"}\NormalTok{, }\StringTok{"Authority Airport"}\NormalTok{, }\StringTok{"Authority Score"}\NormalTok{),}
+      \AttributeTok{align =} \FunctionTok{c}\NormalTok{(}\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{, }\StringTok{"l"}\NormalTok{, }\StringTok{"r"}\NormalTok{),}
+      \AttributeTok{caption =} \StringTok{"Top 10 Airports by Hub and Authority Scores"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrlr@{}}
+\caption{Top 10 Airports by Hub and Authority Scores}\tabularnewline
+\toprule\noalign{}
+Hub Airport & Hub Score & Authority Airport & Authority Score \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Hub Airport & Hub Score & Authority Airport & Authority Score \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+KDFW & 1.0000 & KDFW & 1.0000 \\
+KDTW & 0.9011 & KDTW & 0.5967 \\
+KCLT & 0.8776 & KLAS & 0.5553 \\
+KLAS & 0.8467 & KCLT & 0.5549 \\
+KIAD & 0.6419 & KIAD & 0.4430 \\
+KTPA & 0.4864 & KORF & 0.3059 \\
+KTUL & 0.4628 & KU42 & 0.2988 \\
+KORF & 0.4533 & KDAL & 0.2758 \\
+KCLE & 0.4341 & KTUL & 0.2757 \\
+KMKE & 0.4055 & KJFK & 0.2474 \\
+\end{longtable}
+
+I was surprised that Detroit Wayne County Airport wasn't high up there
+in the hub scores because Detroit is a major Delta hub. One of the
+reasons that I could think of that is Detroit is not a well sought-after
+destination for travel compared to Chicago, Dallas, San Francisco, or
+New York. But it seems like Detroit is a good location for making
+connecting hub.
+
+\subsection{Comparing Centrality
+Measures}\label{comparing-centrality-measures}
+
+Different centrality measures capture different aspects of importance. I
+wanted to see how correlated they are in this airport network.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Pairwise centrality comparison}
+\NormalTok{cent\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{airport =} \FunctionTok{V}\NormalTok{(flight\_undirected)}\SpecialCharTok{$}\NormalTok{name,}
+  \AttributeTok{degree =}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{degree}\NormalTok{(flight\_undirected),}
+  \AttributeTok{betweenness =}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{betweenness}\NormalTok{(flight\_undirected),}
+  \AttributeTok{eigenvector =}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{eigen\_centrality}\NormalTok{(flight\_undirected)}\SpecialCharTok{$}\NormalTok{vector,}
+  \AttributeTok{strength =}\NormalTok{ igraph}\SpecialCharTok{::}\FunctionTok{strength}\NormalTok{(flight\_undirected)}
+\NormalTok{)}
+
+\DocumentationTok{\#\# Pairwise scatter plots}
+\FunctionTok{pairs}\NormalTok{(cent\_df[, }\FunctionTok{c}\NormalTok{(}\StringTok{"degree"}\NormalTok{, }\StringTok{"betweenness"}\NormalTok{, }\StringTok{"eigenvector"}\NormalTok{, }\StringTok{"strength"}\NormalTok{)],}
+      \AttributeTok{col =} \FunctionTok{adjustcolor}\NormalTok{(}\StringTok{"steelblue"}\NormalTok{, }\AttributeTok{alpha.f =} \FloatTok{0.3}\NormalTok{),}
+      \AttributeTok{pch =} \DecValTok{19}\NormalTok{,}
+      \AttributeTok{main =} \StringTok{"Pairwise Centrality Comparisons"}\NormalTok{,}
+      \AttributeTok{labels =} \FunctionTok{c}\NormalTok{(}\StringTok{"Degree"}\NormalTok{, }\StringTok{"Betweenness"}\NormalTok{, }\StringTok{"Eigenvector"}\NormalTok{, }\StringTok{"Strength"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{index_files/figure-pdf/flight-centrality-pairs-1.pdf}}
+
+Now, here all the centrality measures are positively correlated meaning
+that the major hubs tend to score high across all measures. However, the
+strength (weighted degree) shows a stronger correlation with eigenvector
+centrality than with betweenness, which makes sense because both
+strength and eigenvector centrality capture the idea of being connected
+to other important nodes. Betweenness can be high for airports that
+serve as critical bridges even if they don't have many direct
+connections.
+
+
+
+
+\end{document}

@@ -28,7 +28,15 @@
       "Bash(netlify status:*)",
       "Bash(netlify deploy:*)",
       "Bash(netlify sites:create:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(pdftoppm:*)",
+      "Bash(pdftotext:*)",
+      "Bash(pdfinfo:*)",
+      "Bash(git -C /Users/farhan/Documents/GitHub/Airport_Network_Analysis log --oneline -10)",
+      "Bash(Rscript:*)",
+      "Bash(quarto render:*)",
+      "Bash(mdfind:*)",
+      "Bash(/Users/farhan/quarto/bin/quarto render:*)"
     ]
   }
 }
