@@ -13,7 +13,7 @@ else
   echo "Using Quarto from PATH: $(which quarto)"
   quarto --version
   echo "Rendering Quarto site..."
-  quarto render
+  quarto render --to html
 fi
 
 # Deploy to Netlify if token is set (e.g. export NETLIFY_AUTH_TOKEN=...)

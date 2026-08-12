@@ -39,6 +39,6 @@ quarto --version
 
 # Render the site
 echo "Rendering Quarto site..."
-quarto render
+quarto render --to html
 
 echo "Build complete!"

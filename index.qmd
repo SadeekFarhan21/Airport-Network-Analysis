@@ -3,25 +3,14 @@ title: "Computational Notebook"
 subtitle: "Global Flight Connectivity"
 author: "Farhan Sadeek"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-format: 
-  pdf:
+format:
+  html:
     toc: true
+    toc-location: right
     highlight-style: github
-    keep-tex: true
-    toc-title: Contents
-    documentclass: report
-    papersize: letter
-    pdf-engine: xelatex
-    code-overflow: wrap
-    mainfont: "CMU Bright"
-    fig-device: cairo_pdf
-    include-in-header: 
-      text: |
-        \usepackage{fvextra}
-        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
-    monofont: "Fragment Mono"
-    monofontoptions: 
-      - Scale=0.85
+    code-fold: false
+    code-tools: true
+    self-contained: true
 echo: true
 editor: source
 ---
