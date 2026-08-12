@@ -1,6 +1,6 @@
 ---
 title: "Computational Notebook"
-subtitle: "Ego Networks & Global Flight Connectivity"
+subtitle: "Global Flight Connectivity"
 author: "Farhan Sadeek"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 format: 
@@ -26,111 +26,6 @@ echo: true
 editor: source
 ---
 
-```{=html}
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
-
-body {
-  font-family: 'Source Sans 3', 'Segoe UI', Roboto, sans-serif !important;
-  font-size: 17px;
-  line-height: 1.7;
-  color: #333;
-}
-
-/* headings */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Source Sans 3', sans-serif !important;
-  color: #1b2a4a;
-}
-h1.title { font-size: 2.4rem; font-weight: 700; }
-.subtitle { font-size: 1.2rem; color: #5a6f8f; margin-top: -0.5rem; }
-h1 { font-size: 1.9rem; font-weight: 700; margin-top: 2.5rem; padding-bottom: 0.3rem; border-bottom: 2px solid #3b82f6; }
-h2 { font-size: 1.55rem; font-weight: 600; margin-top: 2rem; padding-bottom: 0.25rem; border-bottom: 1px solid #ddd; }
-h3 { font-size: 1.25rem; font-weight: 600; color: #374d6b; margin-top: 1.5rem; }
-
-/* paragraphs and lists */
-p, li, td, th, .summary-highlight {
-  font-family: 'Source Sans 3', sans-serif !important;
-}
-
-/* code */
-pre, code {
-  font-family: 'Fira Code', 'Consolas', monospace !important;
-  font-size: 13px;
-}
-pre.sourceCode {
-  background: #f0f4fa;
-  border: 1px solid #c9d5e8;
-  border-left: 3px solid #3b82f6;
-  border-radius: 0 6px 6px 0;
-  padding: 0.9rem 1rem;
-}
-code:not(pre code) {
-  background: #e8eef8;
-  padding: 0.1rem 0.35rem;
-  border-radius: 3px;
-  font-size: 0.88em;
-  color: #1b2a4a;
-}
-
-/* tables */
-table {
-  font-size: 0.93rem;
-  margin: 1.2rem 0;
-}
-thead th {
-  background: #1b2a4a !important;
-  color: #fff !important;
-  font-weight: 600;
-  padding: 0.55rem 0.8rem;
-}
-tbody td {
-  padding: 0.45rem 0.8rem;
-}
-tbody tr:nth-child(even) { background: #f8f9fb; }
-tbody tr:hover { background: #e8f0fe; }
-table caption {
-  color: #666;
-  font-style: italic;
-  font-size: 0.88rem;
-  caption-side: top;
-  margin-bottom: 0.4rem;
-}
-
-/* plots */
-.cell-output-display img {
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
-  margin: 0.8rem auto;
-  display: block;
-}
-
-/* summary callout box */
-.summary-highlight {
-  background: #f0f7ff;
-  border-left: 4px solid #3b82f6;
-  padding: 1rem 1.3rem;
-  border-radius: 0 6px 6px 0;
-  margin: 1.5rem 0;
-  color: #333;
-}
-.summary-highlight p {
-  margin-bottom: 0.5rem;
-}
-
-/* horizontal rule */
-hr {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 2.5rem 0;
-}
-
-/* keep bold readable */
-strong { color: #1b2a4a; }
-</style>
-```
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, error = FALSE)
 library(tidyverse)
@@ -147,267 +42,18 @@ library(packcircles)
 # Summary
 
 ::: summary-highlight
-I had to split this computational notebook into two parts, the first part is about my own ego network and the second is about the dataset I picked about airport and the interconnected networks between them. For the first part I analyzed my personal **ego network** using McCabe's framework with the three attributes density, transitivity, betweenness, and modularity to understand how I am connected with different social groups. Since I travel a lot and mostly by air the second is a large-scale **flight network** from global aviation data using a random sample of 500 airports, then I used descriptive analysis techniques from Kolaczyk and Csárdi's *Statistical Analysis of Network Data with R* to understand some partterns in graph and networks.
+This report analyzes a sampled **flight network** and the interconnected airports within it. Using descriptive analysis techniques from Kolaczyk and Csárdi's *Statistical Analysis of Network Data with R*, I explore structural patterns in the graph and identify important airports and routes.
 :::
-
-## Ego Network
-
-I will start off with the definition of **ego network**. An ego network tries to gather more information about the local neighborhood around a single node. In the ego network of my life, I am the **ego**, its direct connections (the **alters**), and the connections between them. According to McCabe (2016), ego networks are a fundamental unit of social network analysis because they represent the immediate social environment of an individual.
-
-```{r ego-load}
-## Reading and building the ego network
-ego_net_link = "https://notes.farhansadeek.com/dartmouth/math7/homework/Ego_Network.csv"
-ego <- read.csv(ego_net_link)
-ego_network <- simplify(graph_from_data_frame(ego, directed = FALSE))
-```
-
-### Visualizing the Ego Network
-
-```{r ego-viz}
-## Ego node setup
-ego_node <- "FS"
-
-## Color and size: ego vs alters (Claude Code)
-node_colors <- ifelse(V(ego_network)$name == ego_node, "tomato", "steelblue")
-node_sizes <- ifelse(V(ego_network)$name == ego_node, 12, 7)
-
-layout_fr <- layout_with_fr(ego_network)
-
-## Plot the ego network (Claude Code)
-plot(ego_network,
-     layout = layout_fr,
-     vertex.size = node_sizes,
-     vertex.color = node_colors,
-     vertex.frame.color = "white",
-     vertex.label.family = "sans",
-     vertex.label.color = "black",
-     vertex.label.dist = 1.5,
-     vertex.label.cex = 0.8,
-     edge.arrow.size = 0.4,
-     edge.curved = 0.2,
-     edge.color = adjustcolor("gray70", alpha.f = 0.5),
-     main = "Personal Ego Network")
-
-legend("bottomright", legend = c("Ego (FS)", "Alters"),
-       pt.bg = c("tomato", "steelblue"), col = "white",
-       pch = 21, pt.cex = 1.5, bty = "n")
-```
-
-In my ego network, I am the node connecting many otherwise disconnected people. If we look at the visualization, then it's clear that I am connected to many alters and alters are not very well connected to themselves. Now, this is very common in ego networks, where the ego serves as a central hub bridging otherwise disconnected groups.
-
-### Full Ego Network Measures
-
-Now I will calculate the main structural metrics for the **complete ego network**, which includes all ties between the me and the edges that I am connected to, as well as any connections among the my friends themselves. This would allow us to understand communities and the imapact of me in the ego network formed because of me.
-
-```{r ego-full-measures}
-## Computing full ego network measures
-full_density <- igraph::edge_density(ego_network)
-full_transitivity_global <- igraph::transitivity(ego_network, type = "global")
-full_transitivity_ego <- igraph::transitivity(ego_network, type = "local",
-                          vids = which(V(ego_network)$name == ego_node))
-full_betweenness <- igraph::betweenness(ego_network)
-full_fc <- igraph::cluster_fast_greedy(ego_network)
-full_modularity <- igraph::modularity(full_fc)
-
-## Summary table
-full_measures <- data.frame(
-  Measure = c("Nodes", "Edges", "Ego Degree (number of alters)",
-              "Density", "Global Transitivity",
-              "Local Transitivity of Ego",
-              "Betweenness Centrality of Ego",
-              "Normalized Ego Betweenness",
-              "Number of Communities", "Modularity",
-              "Ego's Community"),
-  Value = c(vcount(ego_network),
-            ecount(ego_network),
-            igraph::degree(ego_network, v = ego_node),
-            round(full_density, 4),
-            round(full_transitivity_global, 4),
-            round(full_transitivity_ego, 4),
-            round(full_betweenness[ego_node], 2),
-            round(full_betweenness[ego_node] / max(full_betweenness), 4),
-            length(full_fc),
-            round(full_modularity, 4),
-            membership(full_fc)[ego_node])
-)
-
-kable(full_measures, col.names = c("Measure", "Value"), align = c("l", "r"))
-```
-
-Since I am the ego I am the center of the network directly connected to almost all other nodes; the network as a whole is moderately dense given its size, but alters have relatively low connectivity amongst themselves, indicated by the comparatively low local transitivity for the ego. My betweenness centrality is maximized showing that I am the main bridge in the network, and most communication flows through me. Since the modularity is high it means that that there might have some clustering among the alters desite me being the center of the network.
-
-### Alter-Only Network without Ego
-
-Now I will have to remove the ego node to create the **alter-only induced subgraph** that has only the alter-alter edges. Now, this is important because it shows us how connected the alters are to each other *without* the ego serving as a bridge.
-
-```{r alter-remove}
-## Remove ego to get alter-only network
-alter_network <- igraph::delete_vertices(ego_network, which(V(ego_network)$name == ego_node))
-## Alter-only network measures
-alter_density <- igraph::edge_density(alter_network)
-alter_transitivity_global <- igraph::transitivity(alter_network, type = "global")
-alter_connected <- igraph::is_connected(alter_network)
-alter_n_components <- igraph::components(alter_network)$no
-alter_fc <- igraph::cluster_louvain(alter_network)
-alter_modularity <- igraph::modularity(alter_fc)
-
-alter_measures <- data.frame(
-  Measure = c("Nodes", "Edges", "Density", "Global Transitivity",
-              "Is Connected", "Number of Components",
-              "Number of Communities", "Modularity"),
-  Value = c(vcount(alter_network),
-            ecount(alter_network),
-            round(alter_density, 4),
-            round(alter_transitivity_global, 4),
-            alter_connected,
-            alter_n_components,
-            length(alter_fc),
-            round(alter_modularity, 4))
-)
-
-kable(alter_measures, col.names = c("Measure", "Value"), align = c("l", "r"))
-```
-
-```{r alter-viz}
-## Visualize alter-only network by community
-n_communities <- max(alter_fc$membership)
-pal <- if (n_communities <= 12) brewer.pal(max(3, n_communities), "Set3") else rainbow(n_communities)
-alter_node_colors <- pal[alter_fc$membership]
-
-plot(alter_network,
-     vertex.size = 8,
-     vertex.color = alter_node_colors,
-     vertex.frame.color = "white",
-     vertex.label.family = "sans",
-     vertex.label.color = "black",
-     vertex.label.dist = 1.5,
-     vertex.label.cex = 0.8,
-     edge.arrow.size = 0.4,
-     edge.curved = 0.2,
-     edge.color = adjustcolor("gray80", alpha.f = 0.4),
-     layout = layout_with_fr(alter_network),
-     main = "Alter-Only Network (Colored by Community)")
-```
-
-### Comparison Table
-
-```{r ego-comparison-table}
-results <- data.frame(
-  Measure = c("Nodes", "Edges", "Density", "Global Transitivity", "Modularity", "Communities"),
-  Full_w_ego = c(vcount(ego_network), ecount(ego_network), full_density, full_transitivity_global, full_modularity, length(full_fc)),
-  Alter_only = c(vcount(alter_network), ecount(alter_network), alter_density, alter_transitivity_global, alter_modularity, length(alter_fc))
-)
-
-kable(results, col.names = c("Measure", "Full (w/ ego)", "Alter-only"), digits = 4)
-```
-
-### McCabe's Network Typology
-
-According to the McCabe, there are three types of network structure - **Tight-knitters** have one densely connected, often exclusive group (high density, high transitivity, low modularity) - **Compartmentalizers** maintain distinct, separate groups that do not mingle (moderate density, high modularity, multiple clear communities). - **Samplers** maintain separate individual or small-group friendships across different areas of life (low density, low transitivity, many components or isolates in the alter-only network).
-
-I can classify my ego network by examining the structural signatures in the alter-only network, since that reveals the true pattern of connections among my contacts without me as the bridge.
-
-```{r typology-classification}
-## Gemini 3.1 Pro
-typology_metrics <- data.frame(
-  Metric = c("Alter-only density", "Alter-only transitivity",
-             "Alter-only modularity", "Number of communities",
-             "Number of components"),
-  Value = c(round(alter_density, 4),
-            round(alter_transitivity_global, 4),
-            round(alter_modularity, 4),
-            length(alter_fc),
-            alter_n_components)
-)
-
-kable(typology_metrics, col.names = c("Metric", "Value"), align = c("l", "r"),
-      caption = "Alter-Only Network Metrics for Typology Classification")
-
-## Classification logic based on McCabe (2016)
-if (alter_density > 0.3 && alter_modularity < 0.3) {
-  ego_type <- "Tight-knitter"
-} else if (alter_density < 0.10 && alter_n_components > 3) {
-  ego_type <- "Sampler"
-} else {
-  ego_type <- "Compartmentalizer"
-}
-```
-
-Based on these metrics, I classify as a **`r ego_type`**. Here is the the pattern that I noticed there was
-
--   A **Tight-knitter** would show alter-only density above 0.3 and modularity below 0.3 — one big, tightly connected group where everyone knows everyone.
--   A **Sampler** would show very low alter-only density (below 0.15) and many disconnected components (more than 3) — scattered friendships that don't form groups.
--   A **Compartmentalizer** falls in between: the alter-only network has moderate density with clear community structure (high modularity) — distinct friend groups (e.g., academic, extracurricular, home) that don't overlap much.
-
-With an alter-only density of `r round(alter_density, 4)`, modularity of `r round(alter_modularity, 4)`, and `r alter_n_components` components, my network fits the **`r ego_type`** pattern. `r if(ego_type == "Compartmentalizer") "My contacts cluster into separate social circles — groups from different parts of my life that are internally connected but rarely mingle with each other. When I am removed from the network, these groups become clearly visible as distinct communities." else if(ego_type == "Tight-knitter") "My contacts form one densely connected group where most people know each other. Even without me in the network, the alters remain well-connected." else "My contacts are mostly individual friendships rather than tight groups. Without me as the connector, many alters become isolated or form very small clusters."`
-
-### Alter Role Classification
-
-Now [Gemini](https://gemini.google.com) also classified each alter by their structural role within the network. An alter's degree, local clustering coefficient, and betweenness centrality together reveal whether they sit inside a tight group, serve as a bridge between groups, or are relatively isolated.
-
-```{r alter-role-classification}
-## Classifying each alter by their structural role
-alter_names <- V(alter_network)$name
-alter_deg <- igraph::degree(alter_network)
-alter_local_trans <- igraph::transitivity(alter_network, type = "local")
-alter_betw <- igraph::betweenness(alter_network, normalized = TRUE)
-alter_community <- membership(alter_fc)
-
-alter_classification <- data.frame(
-  Alter = alter_names,
-  Degree = alter_deg,
-  Local_Clustering = round(alter_local_trans, 4),
-  Betweenness = round(alter_betw, 4),
-  Community = alter_community
-)
-
-## Assigning roles based on degree, clustering, and betweenness
-alter_classification$Role <- ifelse(
-  alter_deg == 0, "Isolate",
-  ifelse(alter_betw > median(alter_betw[alter_betw > 0], na.rm = TRUE) &
-         alter_deg >= median(alter_deg[alter_deg > 0]),
-         "Bridge",
-         ifelse(!is.na(alter_local_trans) & alter_local_trans > 0.5,
-                "Tight-knit member",
-                "Peripheral")))
-
-kable(alter_classification |> arrange(desc(Degree)),
-      col.names = c("Alter", "Degree", "Local Clustering", "Betweenness",
-                     "Community", "Role"),
-      align = c("l", "r", "r", "r", "r", "l"),
-      caption = "Alter Classification by Network Role")
-```
-
-```{r alter-role-barplot}
-par(mar = c(7, 5, 2, 3))  # increase bottom margin
-role_summary <- table(alter_classification$Role)
-barplot(sort(role_summary, decreasing = TRUE),
-        col = "steelblue",
-        las = 2,
-        cex.names = 0.8,
-        ylab = "Number of Alters",
-        main = "Distribution of Alter Roles in Ego Network")
-```
-
-The alter role distribution reinforces the `r ego_type` classification. **Isolates** are alters who have no connections to anyone else in my network — they know only me, which is characteristic of sampler-type relationships. **Bridges** are alters with high betweenness who connect different groups, much like I do as the ego. **Tight-knit members** are embedded within a dense cluster where their neighbors are also connected to each other. **Peripheral** alters have some connections but don't fit neatly into a tight group or bridging role.
-
-### Comparison and Discussion
-
-Now if we compare the network with and without me then there are a few interesting patterns. The density drops noticeably when I was removed, and that makes sense because I am connected to every alter by definition. Transitivity also changes, meaning that many of my alters know each other only through me. The modularity in the alter-only network is higher, indicating that without me bridging the groups, the alters cluster into more distinct communities such as friend groups from different parts of my life (college, work, hometown) that have little overlap. Now, this is *consistent with McCabe's observation that ego removal often reveals the brokerage role the ego plays*. Now the betweenness centrality in the full network makes sure that I am a middle-man when connecting groups that would otherwise be disconnected.
-
-------------------------------------------------------------------------
 
 ## Flight Network Analysis
 
-### Sampling from a Large Dataset
+### Sampled Flight Data
 
-Now, this is the second part of the computational notebook where I am taking a **random sample of 500 airports** from the global flight data. This gives us a more realistic and structurally interesting network with regional and smaller airports alongside major hubs. The network should show a variety of degree distribution and hub-and-spoke topology that is characteristic of real-world modern air transportation networks.
-
-I read a single month of global flight data (April 2020) and then drew my sample.
+The analysis uses the supplied sampled flight data, which includes a mix of major and regional airports and preserves the hub-and-spoke structure characteristic of air transportation networks.
 
 ```{r flight-load}
-## Loading April 2020 flight data
-df <- read.csv("dataset/flightlist_20200401_20200430.csv")
+## Loading sampled flight data
+df <- read.csv("sampled_flights.csv")
 ```
 
 ```{r flight-activity}
@@ -423,20 +69,11 @@ airport_activity <- bind_rows(origin_counts, dest_counts) |>
 airport_activity <- airport_activity |> filter(airport != "" & !is.na(airport))
 ```
 
-I used a stratified random sampling approach to ensure the 500-airport sample includes a realistic mix with the very busiest hubs (so the network stays connected) alongside a random draw from the rest. This mirrors how real airline networks work a few major hubs connect to many smaller airports.
+`sampled_flights.csv` is used directly; no additional airport sampling or filtering is applied.
 
 ```{r flight-sampling}
-## Randomly sample 500 airports
-set.seed(42)
-
-all_airports <- airport_activity$airport
-sampled_airports <- sample(all_airports, min(2000, length(all_airports)))
-
-## Filter to flights between sampled airports
-sampled_df <- df |> filter(origin %in% sampled_airports & destination %in% sampled_airports)
-
-cat("Number of sampled airports:", length(sampled_airports), "\n")
-cat("Number of flights between sampled airports:", nrow(sampled_df), "\n")
+sampled_df <- df
+cat("Number of flights:", nrow(sampled_df), "\n")
 ```
 
 ### Building the Network
